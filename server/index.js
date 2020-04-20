@@ -23,19 +23,12 @@ const https = config.ssl
       app
     )
   : null;
-const api = require('./api');
+
 const io = require('socket.io')(config.ssl_enabled ? https : http);
-
-function redirectHTTPS(req, res, next) {
-  if (req.secure) {
-    return next();
-  }
-
-  logger.info('Redirecting HTTP connection to HTTPS.');
-  res.redirect('https://' + req.hostname + req.url);
-}
-
-if (config.ssl_enabled) app.all('*', redirectHTTPS);
+const api = require('./api');
+const relays = require('./controllers/relays');
+const serialParser = require('./controllers/serial_parser');
+const sensors = require('./controllers/sensors');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -58,15 +51,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve('../client/dist/index.html'));
 });
 
-if (config.ssl) {
-  https.listen(config.ssl_port, () => {
-    logger.info('Web service has started at: https://hydrobuddy.local');
-  });
-} else {
-  http.listen(config.port, () => {
-    logger.info('Web service has started at: http://hydrobuddy.local');
-  });
-}
+http.listen(config.port, () => {
+  logger.info('Web service has started at: http://hydrobuddy.local');
+});
 
 io.on('connection', (socket) => {
   logger.debug('Client has connected.');
