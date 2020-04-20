@@ -74,6 +74,106 @@ const relays = {
       events.emit('change', 'lights.status', this.status());
     },
   },
+  exhaust_fan: {
+    pin: 6,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('exhaust_fan.status', this.status());
+      events.emit('change', 'exhaust_fan.status', this.status());
+    },
+    water_pumps: {
+      pin: 5,
+      setup: function () {
+        rpio.open(this.pin, rpio.OUTPUT);
+        rpio.poll(this.pin, this.onChange.bind(this));
+      },
+      on: function () {
+        !this.status() && rpio.write(this.pin, rpio.LOW);
+      },
+      off: function () {
+        this.status() && rpio.write(this.pin, rpio.HIGH);
+      },
+      status: function () {
+        return !rpio.read(this.pin);
+      },
+      onChange: function () {
+        save('water_pumps.status', this.status());
+        events.emit('change', 'water_pumps.status', this.status());
+      },
+    },
+    fill_valve: {
+      pin: 16,
+      setup: function () {
+        rpio.open(this.pin, rpio.OUTPUT);
+        rpio.poll(this.pin, this.onChange.bind(this));
+      },
+      on: function () {
+        !this.status() && rpio.write(this.pin, rpio.LOW);
+      },
+      off: function () {
+        this.status() && rpio.write(this.pin, rpio.HIGH);
+      },
+      status: function () {
+        return !rpio.read(this.pin);
+      },
+      onChange: function () {
+        save('fill_valve.status', this.status());
+        events.emit('change', 'fill_valve.status', this.status());
+      },
+    },
+    drain_valve: {
+      pin: 17,
+      setup: function () {
+        rpio.open(this.pin, rpio.OUTPUT);
+        rpio.poll(this.pin, this.onChange.bind(this));
+      },
+      on: function () {
+        !this.status() && rpio.write(this.pin, rpio.LOW);
+      },
+      off: function () {
+        this.status() && rpio.write(this.pin, rpio.HIGH);
+      },
+      status: function () {
+        return !rpio.read(this.pin);
+      },
+      onChange: function () {
+        save('drain_valve.status', this.status());
+        events.emit('change', 'drain_valve.status', this.status());
+      },
+    },
+    drain_pump: {
+      pin: 12,
+      setup: function () {
+        rpio.open(this.pin, rpio.OUTPUT);
+        rpio.poll(this.pin, this.onChange.bind(this));
+      },
+      on: function () {
+        !this.status() && rpio.write(this.pin, rpio.LOW);
+      },
+      off: function () {
+        this.status() && rpio.write(this.pin, rpio.HIGH);
+      },
+      status: function () {
+        return !rpio.read(this.pin);
+      },
+      onChange: function () {
+        save('drain_pump.status', this.status());
+        events.emit('change', 'drain_pump.status', this.status());
+      },
+    },
+  },
 };
 
 module.export = relays;
