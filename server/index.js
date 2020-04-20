@@ -8,17 +8,11 @@ try {
 }
 
 const Logger = require('logplease');
-
 const logger = Logger.create('Server');
-
 const fs = require('fs');
-
 const path = require('path');
-
 const express = require('express');
-
 const app = express();
-
 const http = require('http').createServer(app);
 
 const https = config.ssl
@@ -30,6 +24,8 @@ const https = config.ssl
       app
     )
   : null;
+
+const io = require('socket.io')(config.ssl_enabled ? https : http);
 
 function redirectHTTPS(req, res, next) {
   if (req.secure) {
@@ -65,10 +61,18 @@ app.get('/', (req, res) => {
 
 if (config.ssl) {
   https.listen(config.ssl_port, () => {
-    logger.info('is now listing at: https://hydrobuddy.local');
+    logger.info('Web service has started at: https://hydrobuddy.local');
   });
 } else {
   http.listen(config.port, () => {
-    logger.info('is now listing at: http://hydrobuddy.local');
+    logger.info('Web service has started at: http://hydrobuddy.local');
   });
 }
+
+io.on('connection', (socket) => {
+  logger.debug('Client has connected.');
+
+  socket.on('disconnect', function () {
+    logger.debug('Client has disconnected.');
+  });
+});

@@ -26,7 +26,8 @@
   "homepage": "https://github.com/taayls/hydrobuddy#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "logplease": "^1.2.15"
+    "logplease": "^1.2.15",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
