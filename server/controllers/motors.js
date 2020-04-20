@@ -1,11 +1,17 @@
+const axios = require('axios');
 const config = require('../config/motors.config');
+const server_config = require('../config/server.config');
 const motorHatOne = require('motor-hat')(config.motor_hat_one);
 const motorHatTwo = require('motor-hat')(config.motor_hat_two);
 const Logger = require('logplease');
-const logger = Logger.create('Motors');
+const logger = Logger.create('Motors', { color: Logger.Colors.Cyan });
 
-motorHatOne.init();
-motorHatTwo.init();
+const api = server_config.host + '/api';
+
+if (!server_config.test) {
+  motorHatOne.init();
+  motorHatTwo.init();
+}
 
 const motors = {
   run_all: function () {
@@ -39,40 +45,32 @@ const motors = {
   pH: {
     up: {
       motor: motorHatOne.dcs[0],
-      //TODO: Get name from database
-      name: 'PH Up',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      add: function () {
+        axios.get(api + '/nutrients/0').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     down: {
       motor: motorHatOne.dcs[1],
-      //TODO: Get name from database
-      name: 'PH Down',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      add: function () {
+        axios.get(api + '/nutrients/1').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
   },
@@ -80,116 +78,93 @@ const motors = {
   nutrient: {
     a: {
       motor: motorHatOne.dcs[2],
-      //TODO: Get name from database
-      name: 'Nutrient A',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
       calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      add: function () {
+        axios.get(api + '/nutrients/2').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     b: {
       motor: motorHatOne.dcs[3],
-      //TODO: Get name from database
-      name: 'Nutrient B',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      add: function () {
+        axios.get(api + '/nutrients/3').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     c: {
       motor: motorHatTwo.dcs[0],
-      //TODO: Get name from database
-      name: 'Nutrient C',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      add: function () {
+        axios.get(api + '/nutrients/4').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     d: {
-      motor: motorHatOne.dcs[1],
-      //TODO: Get name from database
-      name: 'Nutrient D',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      motor: motorHatTwo.dcs[1],
+      add: function () {
+        axios.get(api + '/nutrients/5').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     e: {
-      motor: motorHatOne.dcs[2],
-      //TODO: Get name from database
-      name: 'Nutrient E',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      motor: motorHatTwo.dcs[2],
+      add: function () {
+        axios.get(api + '/nutrients/6').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
     f: {
-      motor: motorHatOne.dcs[3],
-      //TODO: Get name from database
-      name: 'Nutrient F',
-      //TODO: Get amount of ml from database
-      ml: 1,
-      //TODO: Get calibration time per ml from database
-      calibration: 1500,
-      add: function (value) {
-        const name = this.name;
-        const amount = this.ml;
-        const time = this.calibration * amount;
+      motor: motorHatTwo.dcs[3],
+      add: function () {
+        axios.get(api + '/nutrients/7').then((response) => {
+          const name = response.data[0].name;
+          const amount = response.data[0].ml;
+          const time = response.data[0].calibration * amount;
 
-        logger.info(`Adding ${amount}ML of ${name}.`);
+          logger.info(`Adding ${amount}ml of ${name}.`);
 
-        this.motor.runSync('fwd');
-        setTimeout(this.motor.stopSync(), time);
+          this.motor.runSync('fwd');
+          setTimeout(this.motor.stopSync(), time);
+        });
       },
     },
   },

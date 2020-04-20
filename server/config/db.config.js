@@ -1,21 +1,20 @@
-const Sequelize = require('sequelize');
-const db = {};
+const config = require('./server.config');
+const leveldb = require('level')(config.leveldb_path);
+const lem = require('lem');
+const lemdb = lem(leveldb);
 
-const sequelize = new Sequelize({
-  username: 'root',
-  password: '',
-  database: 'hydrobuddy',
-  host: 'localhost',
-  dialect: 'mysql',
-  operatorAliases: false,
-
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
+const knex = require('knex')({
+  client: 'mysql2',
+  connection: {
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'xadsl101',
+    database: 'hydrobuddy',
   },
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+module.exports = {
+  leveldb: leveldb,
+  lemdb: lemdb,
+  knex: knex,
+};

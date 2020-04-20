@@ -14,7 +14,6 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-
 const https = config.ssl
   ? require('https').createServer(
       {
@@ -24,7 +23,7 @@ const https = config.ssl
       app
     )
   : null;
-
+const api = require('./api');
 const io = require('socket.io')(config.ssl_enabled ? https : http);
 
 function redirectHTTPS(req, res, next) {
@@ -53,8 +52,8 @@ app.use((req, res, next) => {
   }
 });
 
+app.use('/api', api);
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
-
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('../client/dist/index.html'));
 });

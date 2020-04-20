@@ -4,6 +4,7 @@
       "name": "Server",
       "script": "./index.js",
       "cwd": "./server/",
+      "ignore_watch": ["temp"],
       "max_memory_restart": "80M",
       "watch": true
     }

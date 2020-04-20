@@ -1,6 +1,6 @@
 const config = require('../config/server.config');
 const rpio = config.test ? null : require('rpio');
-const lemdb = require('../config/lemdb.config').lemdb;
+const lemdb = require('../config/db.config').lemdb;
 
 const EventEmitter = require('events').EventEmitter;
 const events = new EventEmitter();
