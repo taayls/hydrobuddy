@@ -4,7 +4,7 @@ const server_config = require('../config/server.config');
 const motorHatOne = require('motor-hat')(config.motor_hat_one);
 const motorHatTwo = require('motor-hat')(config.motor_hat_two);
 const Logger = require('logplease');
-const logger = Logger.create('Motors', { color: Logger.Colors.Cyan });
+const logger = Logger.create('Nutrients', { color: Logger.Colors.Cyan });
 
 const api = server_config.host + '/api';
 

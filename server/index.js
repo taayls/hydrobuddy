@@ -8,7 +8,7 @@ try {
 }
 
 const Logger = require('logplease');
-const logger = Logger.create('Server');
+const logger = Logger.create('Server', { color: Logger.Colors.Green });
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
