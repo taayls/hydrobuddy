@@ -36,8 +36,8 @@ const motors = {
     motorHatTwo.dcs[3].stopSync();
   },
 
-  purge: function () {
-    logger.info('Purging all motors for 10 seconds.');
+  prime: function () {
+    logger.info('Priming all motors for 10 seconds.');
     motors.run_all();
     setInterval(motors.stop_all(), 10000);
   },
