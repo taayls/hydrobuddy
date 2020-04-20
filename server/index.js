@@ -13,6 +13,8 @@ const logger = Logger.create('Server');
 
 const fs = require('fs');
 
+const path = require('path');
+
 const express = require('express');
 
 const app = express();
@@ -39,6 +41,27 @@ function redirectHTTPS(req, res, next) {
 }
 
 if (config.ssl_enabled) app.all('*', redirectHTTPS);
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, Content-Length, X-Requested-With'
+  );
+
+  if ('OPTIONS' === req.method || '/ping' === req.path) {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+app.use('/', express.static(path.join(__dirname, '../client/dist')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve('../client/dist/index.html'));
+});
 
 http.listen(config.port);
 
