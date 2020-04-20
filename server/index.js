@@ -12,7 +12,7 @@ const logger = Logger.create('Server');
 
 const express = require('express');
 const app = express();
-const http = require('http').createServer(app)
+const http = require('http').createServer(app);
 
 http.listen(config.port);
 

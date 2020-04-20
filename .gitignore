@@ -1,5 +1,7 @@
 # Dependency directories
+.vscode
 node_modules/
+package-lock.json
 
 # Keys
 *.pem
