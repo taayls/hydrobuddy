@@ -8,18 +8,6 @@ motorHatOne.init();
 motorHatTwo.init();
 
 const motors = {
-  setup: function () {
-    config.motor_hat_one.motor_config.forEach((item, i) => {
-      motorHatOne.dcs[i].setSpeedSync(item.speed);
-    });
-
-    config.motor_hat_two.motor_config.forEach((item, i) => {
-      motorHatTwo.dcs[i].setSpeedSync(item.speed);
-    });
-
-    logger.info('Motors Initialized.');
-  },
-
   run_all: function () {
     motorHatOne.dcs[0].runSync('fwd');
     motorHatOne.dcs[1].runSync('fwd');
@@ -46,6 +34,164 @@ const motors = {
     logger.info('Purging all motors for 10 seconds.');
     motors.run_all();
     setInterval(motors.stop_all(), 10000);
+  },
+
+  pH: {
+    up: {
+      motor: motorHatOne.dcs[0],
+      //TODO: Get name from database
+      name: 'PH Up',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    down: {
+      motor: motorHatOne.dcs[1],
+      //TODO: Get name from database
+      name: 'PH Down',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+  },
+
+  nutrient: {
+    a: {
+      motor: motorHatOne.dcs[2],
+      //TODO: Get name from database
+      name: 'Nutrient A',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    b: {
+      motor: motorHatOne.dcs[3],
+      //TODO: Get name from database
+      name: 'Nutrient B',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    c: {
+      motor: motorHatTwo.dcs[0],
+      //TODO: Get name from database
+      name: 'Nutrient C',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    d: {
+      motor: motorHatOne.dcs[1],
+      //TODO: Get name from database
+      name: 'Nutrient D',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    e: {
+      motor: motorHatOne.dcs[2],
+      //TODO: Get name from database
+      name: 'Nutrient E',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
+    f: {
+      motor: motorHatOne.dcs[3],
+      //TODO: Get name from database
+      name: 'Nutrient F',
+      //TODO: Get amount of ml from database
+      ml: 1,
+      //TODO: Get calibration time per ml from database
+      calibration: 1500,
+      add: function (value) {
+        const name = this.name;
+        const amount = this.ml;
+        const time = this.calibration * amount;
+
+        logger.info(`Adding ${amount}ML of ${name}.`);
+
+        this.motor.runSync('fwd');
+        setTimeout(this.motor.stopSync(), time);
+      },
+    },
   },
 };
 
