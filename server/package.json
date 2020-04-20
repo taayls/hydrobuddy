@@ -23,5 +23,12 @@
   "bugs": {
     "url": "https://github.com/taayls/hydrobuddy/issues"
   },
-  "homepage": "https://github.com/taayls/hydrobuddy#readme"
+  "homepage": "https://github.com/taayls/hydrobuddy#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "logplease": "^1.2.15"
+  }
 }
