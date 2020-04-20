@@ -34,6 +34,7 @@
     "motor-hat": "^2.0.10",
     "mysql2": "^2.1.0",
     "rpio": "^2.1.1",
+    "serialport": "^8.0.7",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

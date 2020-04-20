@@ -1,11 +1,9 @@
 const config = require('../config/server.config');
-const rpio = config.test ? null : require('rpio');
-const lemdb = require('../config/db.config').lemdb;
-
 const EventEmitter = require('events').EventEmitter;
-const events = new EventEmitter();
-
+const rpio = config.test ? null : require('rpio');
 if (!config.test) rpio.init({ mapping: 'gpio' });
+const lemdb = require('../config/db.config').lemdb;
+const events = new EventEmitter();
 
 const save = function (key, status) {
   const value = status ? '1' : '0';
@@ -176,4 +174,4 @@ const relays = {
   },
 };
 
-module.export = relays;
+module.exports = relays;
