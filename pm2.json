@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "Server",
+      "script": "./index.js",
+      "cwd": "./server/",
+      "max_memory_restart": "80M",
+      "watch": true
+    }
+  ]
+}
