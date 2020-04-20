@@ -1,0 +1,27 @@
+{
+  "name": "hydrobuddy-server",
+  "version": "1.0.0",
+  "description": "Advanced automated deep water culture hydroponics using Raspberry Pi/Arduino.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taayls/hydrobuddy.git"
+  },
+  "keywords": [
+    "hydroponics",
+    "automated",
+    "arduino",
+    "raspberry",
+    "pi",
+    "hydrobuddy"
+  ],
+  "author": "Tayls",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/taayls/hydrobuddy/issues"
+  },
+  "homepage": "https://github.com/taayls/hydrobuddy#readme"
+}
