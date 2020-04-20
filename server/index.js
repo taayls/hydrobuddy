@@ -63,6 +63,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve('../client/dist/index.html'));
 });
 
-http.listen(config.port);
-
-logger.info(`is now listing at: http://hydrobuddy.local:${config.port}`);
+if (config.ssl) {
+  https.listen(config.ssl_port, () => {
+    logger.info('is now listing at: https://hydrobuddy.local');
+  });
+} else {
+  http.listen(config.port, () => {
+    logger.info('is now listing at: http://hydrobuddy.local');
+  });
+}
