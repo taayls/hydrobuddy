@@ -34,6 +34,46 @@ const relays = {
     this.drain_valve.off();
     this.drain_pump.off();
   },
+  ac: {
+    pin: 27,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    status: function () {
+      return !!rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('ac.status', this.status());
+      events.emit('change', 'ac.status', this.status());
+    },
+  },
+  lights: {
+    pin: 13,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('lights.status', this.status());
+      events.emit('change', 'lights.status', this.status());
+    },
+  },
 };
 
 module.export = relays;
