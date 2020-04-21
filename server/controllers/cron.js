@@ -1,11 +1,11 @@
 const CronJob = require('cron').CronJob;
 const control = require('./controls');
 
-const lights = new CronJob('*/15 */1 * * *', function () {
+const lights = new CronJob('30 * * * *', function () {
   control.light_schedule();
 });
 
-const nutrients = new CronJob('* * * * *', function () {
+const nutrients = new CronJob('0 * * * *', function () {
   control.nutrient_schedule();
 });
 

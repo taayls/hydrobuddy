@@ -1,9 +1,10 @@
 const config = require('../config/server.config');
 const EventEmitter = require('events').EventEmitter;
-const rpio = config.test ? null : require('rpio');
-if (!config.test) rpio.init({ mapping: 'gpio' });
+const rpio = require('rpio');
 const lemdb = require('../config/db.config').lemdb;
 const events = new EventEmitter();
+
+rpio.init({ mapping: 'gpio' });
 
 const save = function (key, status) {
   const value = status ? '1' : '0';
@@ -65,6 +66,7 @@ const relays = {
       this.status() && rpio.write(this.pin, rpio.HIGH);
     },
     status: function () {
+      console.log('Pin 13 is currently ' + (rpio.read(13) ? 'high' : 'low'));
       return !rpio.read(this.pin);
     },
     onChange: function () {

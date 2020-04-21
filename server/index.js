@@ -11,6 +11,7 @@ const fs = require('fs');
 const SerialPort = require('serialport');
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const Logger = require('logplease');
 const logger = Logger.create('Server', { color: Logger.Colors.Green });
 
@@ -27,7 +28,7 @@ const api = require('./api');
 
 relays.setup();
 
-//cron.lights.start();
+cron.lights.start();
 cron.nutrients.start();
 
 app.use((req, res, next) => {
@@ -44,7 +45,8 @@ app.use((req, res, next) => {
     next();
   }
 });
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use('/api', api);
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
 app.get('/', (req, res) => {

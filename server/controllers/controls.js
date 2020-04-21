@@ -7,6 +7,7 @@ const motors = require('./motors');
 
 const Logger = require('logplease');
 const logger = Logger.create('Controls', { color: Logger.Colors.Cyan });
+const logger_record = Logger.create('Nutrients', { color: Logger.Colors.Cyan });
 
 const api = server_config.host + '/api';
 
@@ -80,22 +81,88 @@ const nutrient_schedule = function () {
 const nutrient_pump = function (id) {
   switch (id) {
     case 2:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.a.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     case 3:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.b.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     case 4:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.c.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     case 5:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.d.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     case 6:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.e.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     case 7:
+      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.f.add();
+      axios
+        .post(api + '/nutrients/last_dose/' + id, {
+          last_dose: now,
+        })
+        .then(function (response) {
+          logger_record.info('Nutrient added.');
+        })
+        .catch(function (error) {
+          logger_record.info(error);
+        });
       break;
     default:
   }
