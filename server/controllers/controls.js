@@ -1,8 +1,14 @@
-const server_config = require('./config/server.config.js');
-const control_config = require('./config/controls.config.js');
+const server_config = require('../config/server.config.js');
+const control_config = require('../config/controls.config.js');
+const axios = require('axios');
 const moment = require('moment');
 const relays = require('./relays');
 const motors = require('./motors');
+
+const Logger = require('logplease');
+const logger = Logger.create('Controls', { color: Logger.Colors.Cyan });
+
+const api = server_config.host + '/api';
 
 const evaluate = function (sensor_item) {
   switch (sensor_item.data.key) {
@@ -44,6 +50,22 @@ const evaluate_temperature = function (temperature) {
   }
 };
 
+const light_schedule = function () {
+  axios.get(api + '/lights/info').then((response) => {
+    const now = moment();
+    const on_time = new moment(response.data[0].on_time, 'H');
+    const off_time = new moment(response.data[0].off_time, 'H');
+
+    if (now.isBetween(on_time, off_time, 'minutes')) {
+      relays.lights.on();
+      logger.info('Lights have been turned: ON');
+    } else {
+      relays.lights.off();
+      logger.info('Lights have been turned: OFF');
+    }
+  });
+};
 module.exports = {
   evaluate: evaluate,
+  light_schedule: light_schedule,
 };

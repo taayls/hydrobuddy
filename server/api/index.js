@@ -7,8 +7,10 @@ const leveldb = require('../config/db.config').leveldb;
 
 const control_router = require('./control');
 const nutrients_router = require('./nutrients');
+const lights_router = require('./lights');
 
 router.use('/control', control_router);
 router.use('/nutrients', nutrients_router);
+router.use('/lights', lights_router);
 
 module.exports = router;
