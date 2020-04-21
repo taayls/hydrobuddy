@@ -22,9 +22,12 @@ const io = require('socket.io')(http);
 const relays = require('./controllers/relays');
 const serialParser = require('./controllers/serial_parser');
 const sensors = require('./controllers/sensors');
+const cron = require('./controllers/cron');
 const api = require('./api');
 
 relays.setup();
+
+cron.lights.start();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

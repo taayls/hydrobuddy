@@ -57,11 +57,11 @@ const light_schedule = function () {
     const off_time = new moment(response.data[0].off_time, 'H');
 
     if (now.isBetween(on_time, off_time, 'minutes')) {
-      relays.lights.on();
-      logger.info('Lights have been turned: ON');
+      //relays.lights.on();
+      logger.info(`Lights are [ON] at ${now}`);
     } else {
-      relays.lights.off();
-      logger.info('Lights have been turned: OFF');
+      //relays.lights.off();
+      logger.info(`Lights are [OFF] at ${now}`);
     }
   });
 };
