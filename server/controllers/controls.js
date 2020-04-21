@@ -50,6 +50,57 @@ const evaluate_temperature = function (temperature) {
   }
 };
 
+const nutrient_schedule = function () {
+  const nutrient_array = [2, 3, 4, 5, 6, 7];
+
+  nutrient_array.forEach((id) => {
+    axios.get(api + '/nutrients/' + id).then((response) => {
+      const frequency = response.data[0].frequency;
+      const last_dose = response.data[0].last_dose;
+      const ml = response.data[0].ml;
+      const now = moment();
+      const name = response.data[0].name;
+
+      if (response.data[0].ml == 0) {
+        return;
+      }
+      if (response.data[0].frequency == 0) {
+        return;
+      }
+
+      if (moment(last_dose).isAfter(now.subtract(frequency, 'hours'))) {
+        return;
+      } else {
+        nutrient_pump(response.data[0].id);
+      }
+    });
+  });
+};
+
+const nutrient_pump = function (id) {
+  switch (id) {
+    case 2:
+      motors.nutrient.a.add();
+      break;
+    case 3:
+      motors.nutrient.b.add();
+      break;
+    case 4:
+      motors.nutrient.c.add();
+      break;
+    case 5:
+      motors.nutrient.d.add();
+      break;
+    case 6:
+      motors.nutrient.e.add();
+      break;
+    case 7:
+      motors.nutrient.f.add();
+      break;
+    default:
+  }
+};
+
 const light_schedule = function () {
   axios.get(api + '/lights/info').then((response) => {
     const now = moment();
@@ -57,10 +108,10 @@ const light_schedule = function () {
     const off_time = new moment(response.data[0].off_time, 'H');
 
     if (now.isBetween(on_time, off_time, 'minutes')) {
-      //relays.lights.on();
+      relays.lights.on();
       logger.info(`Lights are [ON] at ${now}`);
     } else {
-      //relays.lights.off();
+      relays.lights.off();
       logger.info(`Lights are [OFF] at ${now}`);
     }
   });
@@ -68,4 +119,6 @@ const light_schedule = function () {
 module.exports = {
   evaluate: evaluate,
   light_schedule: light_schedule,
+  nutrient_schedule: nutrient_schedule,
+  nutrient_pump: nutrient_pump,
 };

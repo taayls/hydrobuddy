@@ -51,7 +51,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -66,7 +66,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -85,7 +85,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -100,7 +100,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -115,7 +115,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -130,7 +130,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -145,7 +145,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);
@@ -160,7 +160,7 @@ const motors = {
           const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
-          logger.info(`Adding ${amount}ml of ${name}.`);
+          logger.info(`Adding ${amount} ML of ${name}.`);
 
           this.motor.runSync('fwd');
           setTimeout(this.motor.stopSync(), time);

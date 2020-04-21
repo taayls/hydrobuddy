@@ -27,7 +27,8 @@ const api = require('./api');
 
 relays.setup();
 
-cron.lights.start();
+//cron.lights.start();
+cron.nutrients.start();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
