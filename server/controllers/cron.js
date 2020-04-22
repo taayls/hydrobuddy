@@ -5,7 +5,7 @@ const lights = new CronJob('*/30 * * * *', function () {
   control.light_schedule();
 });
 
-const nutrients = new CronJob('*0 * * * *', function () {
+const nutrients = new CronJob('0 * * * *', function () {
   control.nutrient_schedule();
 });
 

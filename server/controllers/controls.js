@@ -50,6 +50,52 @@ const evaluate_temperature = function (temperature) {
   }
 };
 
+const evaluate_ph = function (ph) {
+  axios.get(api + '/nutrients/0').then((response) => {
+    const last_dose = response.data[0].last_dose;
+    const now = moment();
+    const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
+      return;
+    } else if (ph < control_config.ph.min) {
+      axios
+        .post(api + '/nutrients/last_dose/0', {
+          last_dose: now_sql,
+        })
+        .then(function (response) {
+          motors.pH.up.add();
+          console.log('done');
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  });
+
+  axios.get(api + '/nutrients/1').then((response) => {
+    const last_dose = response.data[0].last_dose;
+    const now = moment();
+    const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
+      return;
+    } else if (ph > control_config.ph.min) {
+      axios
+        .post(api + '/nutrients/last_dose/1', {
+          last_dose: now_sql,
+        })
+        .then(function (response) {
+          motors.pH.up.add();
+          console.log('done');
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  });
+};
+
 const nutrient_schedule = function () {
   const nutrient_array = [2, 3, 4, 5, 6, 7];
 
@@ -184,4 +230,5 @@ module.exports = {
   light_schedule: light_schedule,
   nutrient_schedule: nutrient_schedule,
   nutrient_pump: nutrient_pump,
+  evaluate_ph: evaluate_ph,
 };
