@@ -6,4 +6,5 @@ module.exports = {
   automate: true,
   port: 3000,
   leveldb_path: './temp/leveldb_data',
+  state_path: './state.json',
 };

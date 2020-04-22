@@ -4,6 +4,7 @@ const axios = require('axios');
 const moment = require('moment');
 const relays = require('./relays');
 const motors = require('./motors');
+const system = require('./system');
 
 const Logger = require('logplease');
 const logger = Logger.create('Controls', { color: Logger.Colors.Cyan });
@@ -51,6 +52,8 @@ const evaluate_temperature = function (temperature) {
 };
 
 const evaluate_ph = function (ph) {
+  if (system.getState() !== 'RUNNING') return;
+
   axios.get(api + '/nutrients/0').then((response) => {
     const last_dose = response.data[0].last_dose;
     const now = moment();
@@ -86,7 +89,7 @@ const evaluate_ph = function (ph) {
           last_dose: now_sql,
         })
         .then(function (response) {
-          motors.pH.up.add();
+          motors.pH.down.add();
           console.log('done');
         })
         .catch(function (error) {
@@ -97,6 +100,8 @@ const evaluate_ph = function (ph) {
 };
 
 const nutrient_schedule = function () {
+  if (system.getState() !== 'RUNNING') return;
+
   const nutrient_array = [2, 3, 4, 5, 6, 7];
 
   nutrient_array.forEach((id) => {
@@ -207,6 +212,8 @@ const nutrient_pump = function (id) {
 };
 
 const light_schedule = function () {
+  if (system.getState() !== 'RUNNING') return;
+
   axios.get(api + '/lights/info').then((response) => {
     const now = moment();
     const on_time = new moment(response.data[0].on_time, 'H');

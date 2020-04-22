@@ -21,12 +21,14 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 const relays = require('./controllers/relays');
+const system = require('./controllers/system');
 const serialParser = require('./controllers/serial_parser');
 const sensors = require('./controllers/sensors');
 const cron = require('./controllers/cron');
 const api = require('./api');
 
 relays.setup();
+system.load();
 
 cron.lights.start();
 //cron.nutrients.start();
@@ -77,7 +79,7 @@ const onSerialTimeout = function () {
 let serialTimeout;
 const SERIAL_TIMEOUT = 60 * 1000;
 const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
-const serialport = new SerialPort('/', { baudRate: 9600 });
+const serialport = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
 
 serialport.pipe(serial);
 serialport.on('open', () =>
