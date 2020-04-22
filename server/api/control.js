@@ -25,6 +25,7 @@ router.post('/state', (req, res) => {
 router.get('/override', (req, res) => {
   try {
     system.setOverride();
+    system.setState('STOPPED');
     relays.off();
     res.status(200).json({ message: 'success' });
   } catch (err) {
@@ -35,6 +36,7 @@ router.get('/override', (req, res) => {
 router.get('/cancel_override', (req, res) => {
   try {
     system.cancelOverride();
+    system.setState('RUNNING');
     relays.setup();
     res.status(200).json({ message: 'success' });
   } catch (err) {

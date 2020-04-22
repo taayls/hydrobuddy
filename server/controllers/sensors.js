@@ -3,6 +3,7 @@ const lemdb = require('../config/db.config').lemdb;
 
 let sensor_data = {
   'reservoir.ph': [],
+  'reservoir.ec': [],
   'reservoir.water_level': [],
   'bucket.1.temperature': [],
   'bucket.2.temperature': [],

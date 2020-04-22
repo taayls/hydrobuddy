@@ -10,6 +10,16 @@ const sensors = [
     },
   },
   {
+    type: 'ec',
+    re: /EC: ([\d.]+)/,
+    format: function (re_result) {
+      return {
+        value: parseFloat(re_result[1]),
+        key: 'reservoir.ec',
+      };
+    },
+  },
+  {
     type: 'water_temperature',
     re: /Temperature bucket ([1234]): ([\d.]+)/,
     format: function (re_result) {

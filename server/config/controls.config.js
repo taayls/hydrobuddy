@@ -11,4 +11,9 @@ module.exports = {
     min: 5.5,
     max: 6.5,
   },
+  water_level: {
+    automate: true,
+    min: 0,
+    max: 0,
+  },
 };

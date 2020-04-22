@@ -99,6 +99,29 @@ const evaluate_ph = function (ph) {
   });
 };
 
+const evaluate_water_level = function (water_level) {
+  if (system.getState() === 'RUNNING') {
+    relays.drain_pump.off();
+
+    if (!control_config.water_level.automate) {
+      relays.fill_valve.off();
+      relays.drain_valve.off();
+      return;
+    }
+
+    if (water_level < control_config.water_level.max) {
+      relays.drain_valve.on();
+    } else if (water_level > config.water_level.grow_limit) {
+      relays.fill_valve.on();
+    } else {
+      relays.fill_valve.off();
+      relays.drain_valve.off();
+    }
+
+    return;
+  }
+};
+
 const nutrient_schedule = function () {
   if (system.getState() !== 'RUNNING') return;
 
