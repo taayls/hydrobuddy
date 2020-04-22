@@ -38,6 +38,9 @@ const system = {
     this.record();
     this.events.emit('state', value);
   },
+  getData: function () {
+    return this._data;
+  },
   getState: function () {
     return this._data.state;
   },
@@ -54,9 +57,14 @@ const system = {
     this._data.drain_cycle = 0;
     this.save();
   },
-  setOverride: function (value) {
-    this._data.override = value;
-    this.events.emit('override', value);
+  setOverride: function () {
+    this._data.override = true;
+    this.events.emit('override', true);
+    this.save();
+  },
+  cancelOverride: function () {
+    this._data.override = false;
+    this.events.emit('override', false);
     this.save();
   },
   isOverridden: function () {
