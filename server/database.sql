@@ -7,7 +7,8 @@ CREATE TABLE `nutrients` (
   `ml` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `frequency` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `calibration` int(11) UNSIGNED NOT NULL DEFAULT 1500,
-  `last_dose` datetime(6) NOT NULL DEFAULT '1970-01-01 12:00:00.000000'
+  `last_dose` datetime(6) NOT NULL DEFAULT '1970-01-01 12:00:00.000000',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `nutrients` (`id`, `name`, `ml`, `frequency`, `calibration`, `last_dose`) VALUES
@@ -23,7 +24,8 @@ INSERT INTO `nutrients` (`id`, `name`, `ml`, `frequency`, `calibration`, `last_d
 CREATE TABLE `lights` (
   `id` int(11) UNSIGNED NOT NULL,
   `on_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
-  `off_time` int(11) UNSIGNED NOT NULL DEFAULT 0
+  `off_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `lights` (`id`, `on_time`, `off_time`) VALUES

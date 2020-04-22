@@ -8,7 +8,6 @@ const motors = require('./motors');
 const Logger = require('logplease');
 const logger = Logger.create('Controls', { color: Logger.Colors.Cyan });
 const logger_record = Logger.create('Nutrients', { color: Logger.Colors.Cyan });
-
 const api = server_config.host + '/api';
 
 const evaluate = function (sensor_item) {
@@ -58,9 +57,7 @@ const nutrient_schedule = function () {
     axios.get(api + '/nutrients/' + id).then((response) => {
       const frequency = response.data[0].frequency;
       const last_dose = response.data[0].last_dose;
-      const ml = response.data[0].ml;
       const now = moment();
-      const name = response.data[0].name;
 
       if (response.data[0].ml == 0) {
         return;
@@ -79,13 +76,13 @@ const nutrient_schedule = function () {
 };
 
 const nutrient_pump = function (id) {
+  const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
   switch (id) {
     case 2:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.a.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -95,11 +92,10 @@ const nutrient_pump = function (id) {
         });
       break;
     case 3:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.b.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -109,11 +105,10 @@ const nutrient_pump = function (id) {
         });
       break;
     case 4:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.c.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -123,11 +118,10 @@ const nutrient_pump = function (id) {
         });
       break;
     case 5:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.d.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -137,11 +131,10 @@ const nutrient_pump = function (id) {
         });
       break;
     case 6:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.e.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -151,11 +144,10 @@ const nutrient_pump = function (id) {
         });
       break;
     case 7:
-      const now = moment().format('YYYY-MM-DD HH:mm:ss');
       motors.nutrient.f.add();
       axios
         .post(api + '/nutrients/last_dose/' + id, {
-          last_dose: now,
+          last_dose: now_sql,
         })
         .then(function (response) {
           logger_record.info('Nutrient added.');
@@ -175,11 +167,15 @@ const light_schedule = function () {
     const off_time = new moment(response.data[0].off_time, 'H');
 
     if (now.isBetween(on_time, off_time, 'minutes')) {
+      if (relays.lights.status() == 0) {
+        logger.info(`Lights turned [ON] at ${now}`);
+      }
       relays.lights.on();
-      logger.info(`Lights are [ON] at ${now}`);
     } else {
+      if (relays.lights.status() == 1) {
+        logger.info(`Lights turned [OFF] at ${now}`);
+      }
       relays.lights.off();
-      logger.info(`Lights are [OFF] at ${now}`);
     }
   });
 };

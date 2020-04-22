@@ -29,7 +29,7 @@ const api = require('./api');
 relays.setup();
 
 cron.lights.start();
-cron.nutrients.start();
+//cron.nutrients.start();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -73,10 +73,11 @@ const onSerialTimeout = function () {
   logger.error('Arduino serial port has timed out.');
 };
 
+/*
 let serialTimeout;
 const SERIAL_TIMEOUT = 60 * 1000;
 const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
-const serialport = new SerialPort('/dev/ttyAMA0', { baudRate: 9600 });
+const serialport = new SerialPort('/', { baudRate: 9600 });
 
 serialport.pipe(serial);
 serialport.on('open', () =>
@@ -95,3 +96,4 @@ serial.on('data', (message) => {
 
   serialTimeout = setTimeout(onSerialTimeout, SERIAL_TIMEOUT);
 });
+*/

@@ -66,7 +66,6 @@ const relays = {
       this.status() && rpio.write(this.pin, rpio.HIGH);
     },
     status: function () {
-      console.log('Pin 13 is currently ' + (rpio.read(13) ? 'high' : 'low'));
       return !rpio.read(this.pin);
     },
     onChange: function () {
