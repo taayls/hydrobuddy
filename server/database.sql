@@ -21,12 +21,13 @@ INSERT INTO `nutrients` (`id`, `name`, `ml`, `frequency`, `calibration`, `last_d
 (6, 'Nutrient E', 0, 0, 1500, '1970-01-01 12:00:00.000000'),
 (7, 'Nutrient F', 0, 0, 1500, '1970-01-01 12:00:00.000000');
 
-CREATE TABLE `lights` (
+CREATE TABLE `stages` (
   `id` int(11) UNSIGNED NOT NULL,
-  `on_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
-  `off_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `name` varchar(255) NOT NULL,
+  `lights_on` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `lights_off` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `max_humidity` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ec_target_low` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ec_target_high` int(11) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `lights` (`id`, `on_time`, `off_time`) VALUES
-(0, 0, 16);

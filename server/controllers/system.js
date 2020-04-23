@@ -11,6 +11,7 @@ const lemdb = require('../config/db.config').lemdb;
 const system = {
   _data: {
     state: 'STOPPED',
+    stage: 'SEEDLING',
     override: false,
     drain_cycle: 0,
   },
@@ -30,6 +31,8 @@ const system = {
   },
   record: function () {
     lemdb.recorder('system.state')(this._data.state);
+    lemdb.recorder('system.stage')(this._data.stage);
+    lemdb.recorder('system.override')(this._data.override);
   },
   setState: function (value) {
     logger.debug(`Updating system state: ${value}`);
@@ -38,11 +41,21 @@ const system = {
     this.record();
     this.events.emit('state', value);
   },
+  setStage: function (value) {
+    logger.debug(`Updating system stage: ${value}`);
+    this._data.stage = value;
+    this.save();
+    this.record();
+    this.events.emit('stage', value);
+  },
   getData: function () {
     return this._data;
   },
   getState: function () {
     return this._data.state;
+  },
+  getStage: function () {
+    return this._data.stage;
   },
   getDrainCycle: function () {
     return this._data.drain_cycle;
@@ -61,11 +74,13 @@ const system = {
     this._data.override = true;
     this.events.emit('override', true);
     this.save();
+    this.record();
   },
   cancelOverride: function () {
     this._data.override = false;
     this.events.emit('override', false);
     this.save();
+    this.record();
   },
   isOverridden: function () {
     return this._data.override;

@@ -236,11 +236,12 @@ const nutrient_pump = function (id) {
 
 const light_schedule = function () {
   if (system.getState() !== 'RUNNING') return;
+  if (system.isOverridden() === true) return;
 
   axios.get(api + '/lights/info').then((response) => {
     const now = moment();
-    const on_time = new moment(response.data[0].on_time, 'H');
-    const off_time = new moment(response.data[0].off_time, 'H');
+    const on_time = new moment(response.data[0].lights_on, 'H');
+    const off_time = new moment(response.data[0].lights_off, 'H');
 
     if (now.isBetween(on_time, off_time, 'minutes')) {
       if (relays.lights.status() == 0) {

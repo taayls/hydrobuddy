@@ -71,6 +71,18 @@ relays.events.on('change', (type, status) => {
   io.sockets.emit(type, status);
 });
 
+system.events.on('state', function (value) {
+  io.sockets.emit('system.state', value);
+});
+
+system.events.on('stage', function (value) {
+  io.sockets.emit('system.stage', value);
+});
+
+system.events.on('override', function (value) {
+  io.sockets.emit('system.override', value);
+});
+
 const onSerialTimeout = function () {
   logger.error('Arduino serial port has timed out.');
 };
