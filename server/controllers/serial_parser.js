@@ -21,11 +21,10 @@ const sensors = [
   },
   {
     type: 'water_temperature',
-    re: /Temperature Bucket ([1234]): ([\d.]+)/,
+    re: /Water Temparature: ([\d.]+)/,
     format: function (re_result) {
-      const bucket_number = parseInt(re_result[1], 10);
       return {
-        key: 'bucket.' + bucket_number + '.temperature',
+        key: 'reservoir.temperature',
         value: parseFloat(re_result[2]),
       };
     },

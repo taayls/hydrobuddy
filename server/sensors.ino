@@ -102,16 +102,8 @@ void loop(void)
     ec_voltage = analogRead(EC_PIN)/1024.0*5000;
     ecValue =  ec.readEC(ec_voltage,temperature);
     Serial.print(ecValue,2);
-    Serial.print("Temperature Bucket 1: ");
+    Serial.print("Water Temperature: ");
     Serial.println(sensors.getTempCByIndex(0));
-    Serial.print("Temperature Bucket 2: ");
-    Serial.println(sensors.getTempCByIndex(1));
-    Serial.print("Temperature Bucket 3: ");
-    Serial.println(sensors.getTempCByIndex(2));
-    Serial.print("Temperature Bucket 4: ");
-    Serial.println(sensors.getTempCByIndex(3));
-    Serial.print("Temperature Bucket 5: ");
-    Serial.println(sensors.getTempCByIndex(4));
 
     // Clear trigPin
     digitalWrite(trigPin, LOW);
