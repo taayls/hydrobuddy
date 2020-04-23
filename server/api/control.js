@@ -4,6 +4,8 @@ const motors = require('../controllers/motors');
 const system = require('../controllers/system');
 const relays = require('../controllers/relays');
 
+const knex = require('../config/db.config').knex;
+
 router.get('/state', (req, res) => {
   try {
     data = system.getData();
@@ -11,6 +13,19 @@ router.get('/state', (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.toString() });
   }
+});
+
+router.get('/info', (req, res) => {
+  const stage = system.getStage().toLowerCase();
+
+  knex('stages')
+    .where('name', stage)
+    .then((stages) => {
+      res.status(200).json(stages);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
 });
 
 router.get('/off', (req, res) => {

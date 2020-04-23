@@ -38,8 +38,12 @@ const evaluate_humidity = function (humidity) {
 
   if (relays.ac.status()) return relays.exhaust.off();
 
-  if (humidity > control_config.humidity.max) relays.exhaust.on();
-  else relays.exhaust.off();
+  axios.get(api + '/control/info').then((response) => {
+    const max_humidity = response.data[0].max_humidity;
+
+    if (humidity > max_humidity) relays.exhaust.on();
+    else relays.exhaust.off();
+  });
 };
 
 const evaluate_temperature = function (temperature) {
