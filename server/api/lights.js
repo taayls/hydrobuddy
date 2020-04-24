@@ -20,33 +20,42 @@ router.get('/info', (req, res) => {
 });
 
 router.get('/auto', (req, res) => {
-  try {
-    system.cancelOverride();
-    controls.light_schedule();
-    res.status(200).json({ message: 'Success' });
-  } catch (err) {
-    res.status(500).json({ message: err.toString() });
-  }
+  knex('settings')
+    .where('id', 0)
+    .update({ automate_lights: 'true' })
+    .then((settings) => {
+      controls.light_schedule();
+      res.status(200).json({ message: 'success' });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
 });
 
 router.get('/on', (req, res) => {
-  try {
-    system.setOverride();
-    relays.lights.on();
-    res.status(200).json({ message: 'Success' });
-  } catch (err) {
-    res.status(500).json({ message: err.toString() });
-  }
+  knex('settings')
+    .where('id', 0)
+    .update({ automate_lights: 'false' })
+    .then((settings) => {
+      relays.lights.on();
+      res.status(200).json({ message: 'success' });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
 });
 
 router.get('/off', (req, res) => {
-  try {
-    system.setOverride();
-    relays.lights.off();
-    res.status(200).json({ message: 'Success' });
-  } catch (err) {
-    res.status(500).json({ message: err.toString() });
-  }
+  knex('settings')
+    .where('id', 0)
+    .update({ automate_lights: 'false' })
+    .then((settings) => {
+      relays.lights.off();
+      res.status(200).json({ message: 'success' });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
 });
 
 module.exports = router;

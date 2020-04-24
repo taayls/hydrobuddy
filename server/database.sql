@@ -5,6 +5,7 @@ CREATE TABLE `settings` (
   `id` int(11) UNSIGNED NOT NULL,
   `current` int(11) UNSIGNED NOT NULL,
   `capacity` int(11) UNSIGNED NOT NULL,
+  `automate_lights` varchar(255) NOT NULL,
   `automate_humidity` varchar(255) NOT NULL,
   `automate_ph` varchar(255) NOT NULL,
   `ph_min` int(11) UNSIGNED NOT NULL,
@@ -18,8 +19,8 @@ CREATE TABLE `settings` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `settings` (`id`, `current`, `capacity`, `automate_humidity`, `automate_ph`, `ph_min`, `ph_max`, `automate_temp`, `temp_min`, `temp_max`, `automate_water_level`, `water_level_min`, `water_level_max`) VALUES
-(0, 0, 0, 'false', 'false', 5.5, 6.5, 'false', 20, 25, 'false', 0, 0);
+INSERT INTO `settings` (`id`, `current`, `capacity`, `automate_lights`, `automate_humidity`, `automate_ph`, `ph_min`, `ph_max`, `automate_temp`, `temp_min`, `temp_max`, `automate_water_level`, `water_level_min`, `water_level_max`) VALUES
+(0, 0, 0, 'false', 'false', 'false', 5.5, 6.5, 'false', 20, 25, 'false', 0, 0);
 
 
 CREATE TABLE `nutrients` (

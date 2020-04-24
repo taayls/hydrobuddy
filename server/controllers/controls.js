@@ -228,27 +228,29 @@ const nutrient_pump = function (id, amount) {
 };
 
 const light_schedule = function () {
-  if (system.getState() !== 'RUNNING') return;
-  if (system.isOverridden() === true) return;
+  axios.get(api + '/settings/info').then((response) => {
+    if (response.data[0].lights_automate === false) return;
 
-  axios.get(api + '/lights/info').then((response) => {
-    const now = moment();
-    const on_time = new moment(response.data[0].lights_on, 'H');
-    const off_time = new moment(response.data[0].lights_off, 'H');
+    axios.get(api + '/lights/info').then((response) => {
+      const now = moment();
+      const on_time = new moment(response.data[0].lights_on, 'H');
+      const off_time = new moment(response.data[0].lights_off, 'H');
 
-    if (now.isBetween(on_time, off_time, 'minutes')) {
-      if (relays.lights.status() == 0) {
-        logger.info(`Lights turned [ON] at ${now}`);
+      if (now.isBetween(on_time, off_time, 'minutes')) {
+        if (relays.lights.status() == 0) {
+          logger.info(`Lights turned [ON] at ${now}`);
+        }
+        relays.lights.on();
+      } else {
+        if (relays.lights.status() == 1) {
+          logger.info(`Lights turned [OFF] at ${now}`);
+        }
+        relays.lights.off();
       }
-      relays.lights.on();
-    } else {
-      if (relays.lights.status() == 1) {
-        logger.info(`Lights turned [OFF] at ${now}`);
-      }
-      relays.lights.off();
-    }
+    });
   });
 };
+
 module.exports = {
   evaluate: evaluate,
   light_schedule: light_schedule,
