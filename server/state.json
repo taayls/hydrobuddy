@@ -1,6 +1,6 @@
 {
   "state": "STOPPED",
-  "stage": "SEEDLING",
+  "stage": "seedling",
   "override": false,
   "drain_cycle": 0
 }

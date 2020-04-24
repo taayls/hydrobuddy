@@ -24,14 +24,10 @@ const relays = require('./controllers/relays');
 const system = require('./controllers/system');
 const serialParser = require('./controllers/serial_parser');
 const sensors = require('./controllers/sensors');
-const cron = require('./controllers/cron');
 const api = require('./api');
 
 relays.setup();
 system.load();
-
-cron.lights.start();
-//cron.nutrients.start();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

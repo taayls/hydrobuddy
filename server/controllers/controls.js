@@ -1,5 +1,4 @@
 const server_config = require('../config/server.config.js');
-const control_config = require('../config/controls.config.js');
 const axios = require('axios');
 const moment = require('moment');
 const relays = require('./relays');
@@ -34,130 +33,120 @@ const evaluate = function (sensor_item) {
 };
 
 const evaluate_humidity = function (humidity) {
-  if (!control_config.humidity.automate) return;
+  if (system.getState() !== 'RUNNING') return;
 
-  if (relays.ac.status()) return relays.exhaust.off();
+  axios.get(api + '/settings/info').then((response) => {
+    const automate = response.data[0].automate_humidity;
 
-  axios.get(api + '/control/info').then((response) => {
-    const max_humidity = response.data[0].max_humidity;
+    if (!automate) return;
+    if (relays.ac.status()) return relays.exhaust.off();
 
-    if (humidity > max_humidity) relays.exhaust.on();
-    else relays.exhaust.off();
+    axios.get(api + '/system/info').then((response) => {
+      const max_humidity = response.data[0].max_humidity;
+
+      if (humidity > max_humidity) relays.exhaust.on();
+      else relays.exhaust.off();
+    });
   });
 };
 
 const evaluate_temperature = function (temperature) {
-  if (temperature >= control_config.temperature.max) {
-    relays.ac.on();
-    relays.exhaust.off();
-  } else if (temperature < control_config.temperature.min) {
-    relays.ac.off();
-  }
+  if (system.getState() !== 'RUNNING') return;
+
+  axios.get(api + '/settings/info').then((response) => {
+    const automate = response.data[0].automate_temp;
+    const temp_min = response.data[0].temp_min;
+    const temp_max = response.data[0].temp_max;
+
+    if (!automate) return;
+
+    if (temperature >= temp_max) {
+      relays.ac.on();
+      relays.exhaust.off();
+    } else if (temperature < temp_min) {
+      relays.ac.off();
+    }
+  });
 };
 
 const evaluate_ph = function (ph) {
   if (system.getState() !== 'RUNNING') return;
 
-  axios.get(api + '/nutrients/0').then((response) => {
-    const last_dose = response.data[0].last_dose;
-    const now = moment();
-    const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+  axios.get(api + '/settings/info').then((response) => {
+    const automate = response.data[0].automate_ph;
+    const ph_min = response.data[0].ph_min;
+    const ph_max = response.data[0].ph_max;
 
-    if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
-      return;
-    } else if (ph < control_config.ph.min) {
-      axios
-        .post(api + '/nutrients/last_dose/0', {
-          last_dose: now_sql,
-        })
-        .then(function (response) {
-          motors.pH.up.add();
-          console.log('done');
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  });
+    if (!automate) return;
 
-  axios.get(api + '/nutrients/1').then((response) => {
-    const last_dose = response.data[0].last_dose;
-    const now = moment();
-    const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
-
-    if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
-      return;
-    } else if (ph > control_config.ph.min) {
-      axios
-        .post(api + '/nutrients/last_dose/1', {
-          last_dose: now_sql,
-        })
-        .then(function (response) {
-          motors.pH.down.add();
-          console.log('done');
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  });
-};
-
-const evaluate_water_level = function (water_level) {
-  if (system.getState() === 'RUNNING') {
-    relays.drain_pump.off();
-
-    if (!control_config.water_level.automate) {
-      relays.fill_valve.off();
-      relays.drain_valve.off();
-      return;
-    }
-
-    if (water_level < control_config.water_level.max) {
-      relays.drain_valve.on();
-    } else if (water_level > config.water_level.grow_limit) {
-      relays.fill_valve.on();
-    } else {
-      relays.fill_valve.off();
-      relays.drain_valve.off();
-    }
-
-    return;
-  }
-};
-
-const nutrient_schedule = function () {
-  if (system.getState() !== 'RUNNING') return;
-
-  const nutrient_array = [2, 3, 4, 5, 6, 7];
-
-  nutrient_array.forEach((id) => {
-    axios.get(api + '/nutrients/' + id).then((response) => {
-      const frequency = response.data[0].frequency;
+    axios.get(api + '/nutrients/0').then((response) => {
       const last_dose = response.data[0].last_dose;
       const now = moment();
+      const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
 
-      if (response.data[0].ml == 0) {
+      if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
         return;
+      } else if (ph < ph_min) {
+        axios
+          .post(api + '/nutrients/last_dose/0', {
+            last_dose: now_sql,
+          })
+          .then(function (response) {
+            motors.pH.up.add();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
-      if (response.data[0].frequency == 0) {
-        return;
-      }
+    });
 
-      if (moment(last_dose).isAfter(now.subtract(frequency, 'hours'))) {
+    axios.get(api + '/nutrients/1').then((response) => {
+      const last_dose = response.data[0].last_dose;
+      const now = moment();
+      const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+
+      if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
         return;
-      } else {
-        nutrient_pump(response.data[0].id);
+      } else if (ph > ph_max) {
+        axios
+          .post(api + '/nutrients/last_dose/1', {
+            last_dose: now_sql,
+          })
+          .then(function (response) {
+            motors.pH.down.add();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     });
   });
 };
 
-const nutrient_pump = function (id) {
+const nutrient_program = function () {
+  if (system.getState() !== 'RUNNING') return;
+
+  const id_array = [2, 3, 4, 5, 6, 7];
+
+  id_array.forEach((id) => {
+    axios.get(api + '/nutrients/' + id).then((response) => {
+      const tag = response.data[0].tag;
+
+      axios.get(api + '/nutrients/info/' + tag).then((response) => {
+        if (response.data[0][tag] == 0) {
+          return;
+        }
+        nutrient_pump(id, response.data[0][tag]);
+      });
+    });
+  });
+};
+
+const nutrient_pump = function (id, amount) {
   const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
   switch (id) {
     case 2:
-      motors.nutrient.a.add();
+      motors.nutrient.a.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -170,7 +159,7 @@ const nutrient_pump = function (id) {
         });
       break;
     case 3:
-      motors.nutrient.b.add();
+      motors.nutrient.b.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -183,7 +172,7 @@ const nutrient_pump = function (id) {
         });
       break;
     case 4:
-      motors.nutrient.c.add();
+      motors.nutrient.c.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -196,7 +185,7 @@ const nutrient_pump = function (id) {
         });
       break;
     case 5:
-      motors.nutrient.d.add();
+      motors.nutrient.d.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -209,7 +198,7 @@ const nutrient_pump = function (id) {
         });
       break;
     case 6:
-      motors.nutrient.e.add();
+      motors.nutrient.e.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -222,7 +211,7 @@ const nutrient_pump = function (id) {
         });
       break;
     case 7:
-      motors.nutrient.f.add();
+      motors.nutrient.f.add(amount);
       axios
         .post(api + '/nutrients/last_dose/' + id, {
           last_dose: now_sql,
@@ -263,7 +252,7 @@ const light_schedule = function () {
 module.exports = {
   evaluate: evaluate,
   light_schedule: light_schedule,
-  nutrient_schedule: nutrient_schedule,
+  nutrient_program: nutrient_program,
   nutrient_pump: nutrient_pump,
   evaluate_ph: evaluate_ph,
 };

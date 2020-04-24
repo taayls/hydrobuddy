@@ -4,6 +4,10 @@ module.exports = {
       min: 0,
       max: 14,
     },
+    ec: {
+      min: 0,
+      max: 14,
+    },
     water_temperature: {
       min: 0,
       max: 32,

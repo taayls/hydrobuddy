@@ -45,10 +45,9 @@ const motors = {
   pH: {
     up: {
       motor: motorHatOne.dcs[0],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/0').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -60,10 +59,9 @@ const motors = {
     },
     down: {
       motor: motorHatOne.dcs[1],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/1').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -78,11 +76,9 @@ const motors = {
   nutrient: {
     a: {
       motor: motorHatOne.dcs[2],
-      calibration: 1500,
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/2').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -94,10 +90,9 @@ const motors = {
     },
     b: {
       motor: motorHatOne.dcs[3],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/3').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -109,10 +104,9 @@ const motors = {
     },
     c: {
       motor: motorHatTwo.dcs[0],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/4').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -124,10 +118,9 @@ const motors = {
     },
     d: {
       motor: motorHatTwo.dcs[1],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/5').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -139,10 +132,9 @@ const motors = {
     },
     e: {
       motor: motorHatTwo.dcs[2],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/6').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
@@ -154,10 +146,9 @@ const motors = {
     },
     f: {
       motor: motorHatTwo.dcs[3],
-      add: function () {
+      add: function (amount) {
         axios.get(api + '/nutrients/7').then((response) => {
           const name = response.data[0].name;
-          const amount = response.data[0].ml;
           const time = response.data[0].calibration * amount;
 
           logger.info(`Adding ${amount} ML of ${name}.`);
