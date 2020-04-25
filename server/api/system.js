@@ -16,7 +16,7 @@ router.get('/state', (req, res) => {
 
 router.post('/state', (req, res) => {
   try {
-    system.setState(req.body.state);
+    system.setState(req.body.state.toUpperCase());
     res.status(200).json({ message: 'success' });
   } catch (err) {
     res.status(500).json({ message: err.toString() });
@@ -25,7 +25,7 @@ router.post('/state', (req, res) => {
 
 router.post('/stage', (req, res) => {
   try {
-    system.setStage(req.body.stage);
+    system.setStage(req.body.stage.toUpperCase());
     res.status(200).json({ message: 'success' });
   } catch (err) {
     res.status(500).json({ message: err.toString() });
@@ -47,7 +47,7 @@ router.get('/info', (req, res) => {
 
 router.get('/off', (req, res) => {
   try {
-    system.setOverride();
+    system.setState('STOPPED');
     relays.off();
     res.status(200).json({ message: 'success' });
   } catch (err) {
@@ -57,7 +57,7 @@ router.get('/off', (req, res) => {
 
 router.get('/on', (req, res) => {
   try {
-    system.cancelOverride();
+    system.setState('RUNNING');
     res.status(200).json({ message: 'success' });
   } catch (err) {
     res.status(500).json({ message: err.toString() });

@@ -129,16 +129,18 @@ const nutrient_program = function () {
   const id_array = [2, 3, 4, 5, 6, 7];
 
   id_array.forEach((id) => {
-    axios.get(api + '/nutrients/' + id).then((response) => {
-      const tag = response.data[0].tag;
+    setTimeout(() => {
+      axios.get(api + '/nutrients/' + id).then((response) => {
+        const tag = response.data[0].tag;
 
-      axios.get(api + '/nutrients/info/' + tag).then((response) => {
-        if (response.data[0][tag] == 0) {
-          return;
-        }
-        nutrient_pump(id, response.data[0][tag]);
+        axios.get(api + '/nutrients/info/' + tag).then((response) => {
+          if (response.data[0][tag] == 0) {
+            return;
+          }
+          nutrient_pump(id, response.data[0][tag]);
+        });
       });
-    });
+    }, 300000 * id);
   });
 };
 

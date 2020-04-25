@@ -7,11 +7,13 @@ const leveldb = require('../config/db.config').leveldb;
 
 const lights_router = require('./lights');
 const nutrients_router = require('./nutrients');
+const pumps_router = require('./pumps');
 const settings_router = require('./settings');
 const system_router = require('./system');
 
 router.use('/lights', lights_router);
 router.use('/nutrients', nutrients_router);
+router.use('/pumps', pumps_router);
 router.use('/settings', settings_router);
 router.use('/system', system_router);
 
