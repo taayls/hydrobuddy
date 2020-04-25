@@ -30,11 +30,11 @@ const motors = {
   },
   calibrate_one: function (id) {
     this.run_one(id);
-    setInterval(this.stop_one(id), 10000);
+    setInterval(this.stop_one(id), 30000);
   },
   calibrate_two: function (id) {
     this.run_two(id);
-    setInterval(this.stop_two(id), 10000);
+    setInterval(this.stop_two(id), 30000);
   },
   run_all: function () {
     motorHatOne.dcs[0].runSync('fwd');
