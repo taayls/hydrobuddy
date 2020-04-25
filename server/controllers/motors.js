@@ -14,6 +14,28 @@ if (!server_config.test) {
 }
 
 const motors = {
+  run_one: function (id) {
+    logger.info(`Running pump ${id}`);
+    motorHatOne.dcs[id].runSync('fwd');
+  },
+  run_two: function (id) {
+    motorHatTwo.dcs[id].runSync('fwd');
+  },
+  stop_one: function (id) {
+    logger.info(`Stopping pump ${id}`);
+    motorHatOne.dcs[id].stopSync();
+  },
+  stop_two: function (id) {
+    motorHatTwo.dcs[id].stopSync();
+  },
+  calibrate_one: function (id) {
+    this.run_one(id);
+    setInterval(this.stop_one(id), 10000);
+  },
+  calibrate_two: function (id) {
+    this.run_two(id);
+    setInterval(this.stop_two(id), 10000);
+  },
   run_all: function () {
     motorHatOne.dcs[0].runSync('fwd');
     motorHatOne.dcs[1].runSync('fwd');
