@@ -14,27 +14,67 @@ if (!server_config.test) {
 }
 
 const motors = {
-  run_one: function (id) {
-    logger.info(`Running pump ${id}`);
-    motorHatOne.dcs[id].runSync('fwd');
+  run: function (id) {
+    switch (id) {
+      case 0:
+        motorHatOne.dcs[0].runSync('fwd');
+        break;
+      case 1:
+        motorHatOne.dcs[1].runSync('fwd');
+        break;
+      case 2:
+        motorHatOne.dcs[2].runSync('fwd');
+        break;
+      case 3:
+        motorHatOne.dcs[3].runSync('fwd');
+        break;
+      case 4:
+        motorHatTwo.dcs[0].runSync('fwd');
+        break;
+      case 5:
+        motorHatTwo.dcs[1].runSync('fwd');
+        break;
+      case 6:
+        motorHatTwo.dcs[2].runSync('fwd');
+        break;
+      case 7:
+        motorHatTwo.dcs[3].runSync('fwd');
+        break;
+      default:
+    }
   },
-  run_two: function (id) {
-    motorHatTwo.dcs[id].runSync('fwd');
+  stop: function (id) {
+    switch (id) {
+      case 0:
+        motorHatOne.dcs[0].stopSync();
+        break;
+      case 1:
+        motorHatOne.dcs[1].stopSync();
+        break;
+      case 2:
+        motorHatOne.dcs[2].stopSync();
+        break;
+      case 3:
+        motorHatOne.dcs[3].stopSync();
+        break;
+      case 4:
+        motorHatTwo.dcs[0].stopSync();
+        break;
+      case 5:
+        motorHatTwo.dcs[1].stopSync();
+        break;
+      case 6:
+        motorHatTwo.dcs[2].stopSync();
+        break;
+      case 7:
+        motorHatTwo.dcs[3].stopSync();
+        break;
+      default:
+    }
   },
-  stop_one: function (id) {
-    logger.info(`Stopping pump ${id}`);
-    motorHatOne.dcs[id].stopSync();
-  },
-  stop_two: function (id) {
-    motorHatTwo.dcs[id].stopSync();
-  },
-  calibrate_one: function (id) {
-    this.run_one(id);
-    setInterval(this.stop_one(id), 30000);
-  },
-  calibrate_two: function (id) {
-    this.run_two(id);
-    setInterval(this.stop_two(id), 30000);
+  calibrate: function (id) {
+    this.run(id);
+    setInterval(this.stop(id), 30000);
   },
   run_all: function () {
     motorHatOne.dcs[0].runSync('fwd');
