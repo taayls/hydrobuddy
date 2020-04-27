@@ -54,7 +54,7 @@ router
     const actual_amount = req.body.amount;
     const new_calibration =
       // Calculate motor time per ml
-      current_calibration * (expected_amount / actual_amount);
+      (current_calibration * (expected_amount / actual_amount)) / 100;
 
     knex('nutrients')
       .where('id', id)

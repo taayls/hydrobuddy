@@ -16,11 +16,14 @@ CREATE TABLE `settings` (
   `automate_water_level` varchar(255) NOT NULL,
   `water_level_min` int(11) UNSIGNED NOT NULL,
   `water_level_max` int(11) UNSIGNED NOT NULL,
+  `water_grow_level` int(11) UNSIGNED NOT NULL,
+  `water_pump_limit` int(11) UNSIGNED NOT NULL,
+  `water_drain_limit` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `settings` (`id`, `current`, `capacity`, `automate_lights`, `automate_humidity`, `automate_ph`, `ph_min`, `ph_max`, `automate_temp`, `temp_min`, `temp_max`, `automate_water_level`, `water_level_min`, `water_level_max`) VALUES
-(0, 0, 0, 'false', 'false', 'false', 5.5, 6.5, 'false', 20, 25, 'false', 0, 0);
+INSERT INTO `settings` (`id`, `current`, `capacity`, `automate_lights`, `automate_humidity`, `automate_ph`, `ph_min`, `ph_max`, `automate_temp`, `temp_min`, `temp_max`, `automate_water_level`, `water_level_min`, `water_level_max`, `water_grow_level`, `water_pump_limit`, `water_drain_limit`) VALUES
+(0, 0, 0, 'false', 'false', 'false', 5.5, 6.5, 'false', 20, 25, 'false', 0, 0, 0, 0, 0);
 
 
 CREATE TABLE `nutrients` (

@@ -13,15 +13,23 @@ const api = server_config.host + '/api';
 const evaluate = function (sensor_item) {
   switch (sensor_item.data.key) {
     case 'room.temperature':
+      if (system.getState() !== 'RUNNING') return;
       evaluate_temperature(sensor_item.data.value);
       break;
 
     case 'room.humidity':
+      if (system.getState() !== 'RUNNING') return;
       evaluate_humidity(sensor_item.data.value);
       break;
 
     case 'reservoir.ph':
+      if (system.getState() !== 'RUNNING') return;
       evaluate_ph(sensor_item.data.value);
+      break;
+
+    case 'reservoir.ec':
+      if (system.getState() !== 'RUNNING') return;
+      evaluate_ec(sensor_item.data.value);
       break;
 
     case 'reservoir.water_level':
@@ -33,8 +41,6 @@ const evaluate = function (sensor_item) {
 };
 
 const evaluate_humidity = function (humidity) {
-  if (system.getState() !== 'RUNNING') return;
-
   axios.get(api + '/settings/info').then((response) => {
     const automate = response.data[0].automate_humidity;
 
@@ -51,8 +57,6 @@ const evaluate_humidity = function (humidity) {
 };
 
 const evaluate_temperature = function (temperature) {
-  if (system.getState() !== 'RUNNING') return;
-
   axios.get(api + '/settings/info').then((response) => {
     const automate = response.data[0].automate_temp;
     const temp_min = response.data[0].temp_min;
@@ -70,8 +74,6 @@ const evaluate_temperature = function (temperature) {
 };
 
 const evaluate_ph = function (ph) {
-  if (system.getState() !== 'RUNNING') return;
-
   axios.get(api + '/settings/info').then((response) => {
     const automate = response.data[0].automate_ph;
     const ph_min = response.data[0].ph_min;
@@ -120,6 +122,71 @@ const evaluate_ph = function (ph) {
           });
       }
     });
+  });
+};
+
+const evaluate_water_level = function (water_level) {
+  axios.get(api + '/settings/info').then((response) => {
+    const automate = response.data[0].automate_water_level;
+    const level_min = response.data[0].water_level_min;
+    const level_max = response.data[0].water_level_max;
+    const grow_level = response.data[0].water_grow_level;
+    const pump_limit = response.data[0].water_pump_limit;
+    const drain_limit = response.data[0].water_pump_limit;
+
+    if (system.getState() === 'RUNNING') {
+      relays.drain_pump.off();
+
+      if (!automate) {
+        relays.fill_valve.off();
+        relays.drain_valve.off();
+        return;
+      }
+
+      if (water_level < level_max) {
+        relays.drain_valve.on();
+      } else if (water_level > grow_level) {
+        relays.fill_valve.on();
+      } else {
+        relays.fill_valve.off();
+        relays.drain_valve.off();
+      }
+
+      return;
+    }
+
+    if (water_level > pump_limit) relays.water_pumps.off();
+    else relays.water_pumps.on();
+
+    if (system.getState() === 'DRAINING') {
+      if (water_level >= level_min) {
+        system.setState('FILLING');
+        relays.drain_valve.off();
+        relays.drain_pump.off();
+        relays.fill_valve.on();
+      } else {
+        relays.drain_valve.on();
+        relays.drain_pump.on();
+        relays.fill_valve.off();
+      }
+    } else if (system.getState() === 'FILLING') {
+      if (system.getDrainCycle() < 2 && water_level <= drain_limit) {
+        system.setState('DRAINING');
+        system.increaseDrainCycle();
+        relays.drain_valve.on();
+        relays.drain_pump.on();
+        relays.fill_valve.off();
+      } else if (water_level <= level_max) {
+        system.setState('RUNNING');
+        system.resetDrainCycle();
+        relays.fill_valve.off();
+        nutrient_program();
+      } else {
+        relays.fill_valve.on();
+        relays.drain_valve.off();
+        relays.drain_pump.off();
+      }
+    }
   });
 };
 
