@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
-const server_config = require('../config/server.config.js');
 const motors = require('../controllers/motors');
-const api = server_config.host + '/api';
 
 const knex = require('../config/db.config').knex;
 
@@ -46,28 +43,24 @@ router.get('/calibrate/:id', (req, res) => {
   }
 });
 
-router
-  .post('/calibrate/:id', (req, res) => {
-    const id = req.params.id;
-    const current_calibration = 30000;
-    const expected_amount = 100;
-    const actual_amount = req.body.amount;
-    const new_calibration =
-      // Calculate motor time per ml
-      (current_calibration * (expected_amount / actual_amount)) / 100;
+router.post('/calibrate/:id', (req, res) => {
+  const id = req.params.id;
+  const current_calibration = 30000;
+  const expected_amount = 100;
+  const actual_amount = req.body.amount;
+  const new_calibration =
+    // Calculate motor time per ml
+    (current_calibration * (expected_amount / actual_amount)) / 100;
 
-    knex('nutrients')
-      .where('id', id)
-      .update({ calibration: new_calibration.toFixed(0) })
-      .then((response) => {
-        res.status(200).json({ message: 'success' });
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err.toString() });
-      });
-  })
-  .catch((err) => {
-    res.status(500).json({ message: err.toString() });
-  });
+  knex('nutrients')
+    .where('id', id)
+    .update({ calibration: new_calibration.toFixed(0) })
+    .then((response) => {
+      res.status(200).json({ message: 'success' });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
+});
 
 module.exports = router;

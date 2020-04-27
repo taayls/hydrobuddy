@@ -17,4 +17,40 @@ router.use('/pumps', pumps_router);
 router.use('/settings', settings_router);
 router.use('/system', system_router);
 
+router.get('/stats/:key', function (req, res) {
+  const result = [];
+  const start =
+    req.query.start && new Date(parseInt(req.query.start, 10)).getTime();
+  const end = req.query.end && new Date(parseInt(req.query.end, 10)).getTime();
+
+  lemdb
+    .valuestream(req.params.key, {
+      start: start,
+      end: end,
+    })
+    .pipe(
+      through(
+        function (data) {
+          result.push({
+            timestamp: data.key,
+            value: data.value,
+          });
+        },
+        function () {
+          res.status(200).json(result);
+        }
+      )
+    );
+});
+
+router.delete('/stats/:key/:value', authenticate, function (req, res) {
+  const key = 'values.' + req.params.key + '.' + req.params.value;
+
+  leveldb.del(key, function (err) {
+    res
+      .status(err ? 500 : 200)
+      .json({ message: err ? err.toString() : 'done' });
+  });
+});
+
 module.exports = router;

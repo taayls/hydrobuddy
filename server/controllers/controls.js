@@ -125,6 +125,8 @@ const evaluate_ph = function (ph) {
   });
 };
 
+const evaluate_ec = function (ec) {};
+
 const evaluate_water_level = function (water_level) {
   axios.get(api + '/settings/info').then((response) => {
     const automate = response.data[0].automate_water_level;
@@ -322,6 +324,7 @@ const light_schedule = function () {
 
 module.exports = {
   evaluate: evaluate,
+  evaluate_water_level: evaluate_water_level,
   light_schedule: light_schedule,
   nutrient_program: nutrient_program,
   nutrient_pump: nutrient_pump,
