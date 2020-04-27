@@ -45,13 +45,11 @@ const evaluate_humidity = function (humidity) {
     const automate = response.data[0].automate_humidity;
 
     if (!automate) return;
-    if (relays.ac.status()) return relays.exhaust.off();
-
     axios.get(api + '/system/info').then((response) => {
       const max_humidity = response.data[0].max_humidity;
 
-      if (humidity > max_humidity) relays.exhaust.on();
-      else relays.exhaust.off();
+      if (humidity > max_humidity) relays.exhaust_fan.on();
+      else relays.exhaust_fan.off();
     });
   });
 };
@@ -65,10 +63,9 @@ const evaluate_temperature = function (temperature) {
     if (!automate) return;
 
     if (temperature >= temp_max) {
-      relays.ac.on();
       relays.exhaust.off();
     } else if (temperature < temp_min) {
-      relays.ac.off();
+      relays.exhaust.off();
     }
   });
 };
@@ -80,47 +77,52 @@ const evaluate_ph = function (ph) {
     const ph_max = response.data[0].ph_max;
 
     if (!automate) return;
+    axios.get(api + '/nutrients/2').then((response) => {
+      const last_nutrients = response.data[0].last_dose;
 
-    axios.get(api + '/nutrients/0').then((response) => {
-      const last_dose = response.data[0].last_dose;
-      const now = moment();
-      const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+      if (moment(last_nutrients).isAfter(now.subtract(45, 'minutes'))) return;
 
-      if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
-        return;
-      } else if (ph < ph_min) {
-        axios
-          .post(api + '/nutrients/last_dose/0', {
-            last_dose: now_sql,
-          })
-          .then(function (response) {
-            motors.pH.up.add();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
-    });
+      axios.get(api + '/nutrients/0').then((response) => {
+        const last_dose = response.data[0].last_dose;
+        const now = moment();
+        const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    axios.get(api + '/nutrients/1').then((response) => {
-      const last_dose = response.data[0].last_dose;
-      const now = moment();
-      const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+        if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
+          return;
+        } else if (ph < ph_min) {
+          axios
+            .post(api + '/nutrients/last_dose/0', {
+              last_dose: now_sql,
+            })
+            .then(function (response) {
+              motors.pH.up.add();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      });
 
-      if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
-        return;
-      } else if (ph > ph_max) {
-        axios
-          .post(api + '/nutrients/last_dose/1', {
-            last_dose: now_sql,
-          })
-          .then(function (response) {
-            motors.pH.down.add();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      axios.get(api + '/nutrients/1').then((response) => {
+        const last_dose = response.data[0].last_dose;
+        const now = moment();
+        const now_sql = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        if (moment(last_dose).isAfter(now.subtract(30, 'minutes'))) {
+          return;
+        } else if (ph > ph_max) {
+          axios
+            .post(api + '/nutrients/last_dose/1', {
+              last_dose: now_sql,
+            })
+            .then(function (response) {
+              motors.pH.down.add();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      });
     });
   });
 };
@@ -157,8 +159,8 @@ const evaluate_water_level = function (water_level) {
       return;
     }
 
-    if (water_level > pump_limit) relays.water_pumps.off();
-    else relays.water_pumps.on();
+    if (water_level > pump_limit) relays.system_pumps.off();
+    else relays.system_pumps.on();
 
     if (system.getState() === 'DRAINING') {
       if (water_level >= level_min) {

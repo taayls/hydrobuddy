@@ -14,12 +14,12 @@ const save = function (key, status) {
 const relays = {
   events: events,
   setup: function () {
-    if (config.test) return;
+    //if (config.test) return;
 
     this.ac.setup();
     this.lights.setup();
     this.exhaust_fan.setup();
-    this.water_pumps.setup();
+    this.system_pumps.setup();
     this.fill_valve.setup();
     this.drain_valve.setup();
     this.drain_pump.setup();
@@ -28,7 +28,7 @@ const relays = {
     this.ac.off();
     this.lights.off();
     this.exhaust_fan.off();
-    this.water_pumps.off();
+    this.system_pumps.off();
     this.fill_valve.off();
     this.drain_valve.off();
     this.drain_pump.off();
@@ -38,6 +38,7 @@ const relays = {
     setup: function () {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.LOW);
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.HIGH);
@@ -58,6 +59,7 @@ const relays = {
     setup: function () {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -78,6 +80,7 @@ const relays = {
     setup: function () {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -92,85 +95,89 @@ const relays = {
       save('exhaust_fan.status', this.status());
       events.emit('change', 'exhaust_fan.status', this.status());
     },
-    water_pumps: {
-      pin: 5,
-      setup: function () {
-        rpio.open(this.pin, rpio.OUTPUT);
-        rpio.poll(this.pin, this.onChange.bind(this));
-      },
-      on: function () {
-        !this.status() && rpio.write(this.pin, rpio.LOW);
-      },
-      off: function () {
-        this.status() && rpio.write(this.pin, rpio.HIGH);
-      },
-      status: function () {
-        return !rpio.read(this.pin);
-      },
-      onChange: function () {
-        save('water_pumps.status', this.status());
-        events.emit('change', 'water_pumps.status', this.status());
-      },
+  },
+  system_pumps: {
+    pin: 5,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
     },
-    fill_valve: {
-      pin: 16,
-      setup: function () {
-        rpio.open(this.pin, rpio.OUTPUT);
-        rpio.poll(this.pin, this.onChange.bind(this));
-      },
-      on: function () {
-        !this.status() && rpio.write(this.pin, rpio.LOW);
-      },
-      off: function () {
-        this.status() && rpio.write(this.pin, rpio.HIGH);
-      },
-      status: function () {
-        return !rpio.read(this.pin);
-      },
-      onChange: function () {
-        save('fill_valve.status', this.status());
-        events.emit('change', 'fill_valve.status', this.status());
-      },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
     },
-    drain_valve: {
-      pin: 17,
-      setup: function () {
-        rpio.open(this.pin, rpio.OUTPUT);
-        rpio.poll(this.pin, this.onChange.bind(this));
-      },
-      on: function () {
-        !this.status() && rpio.write(this.pin, rpio.LOW);
-      },
-      off: function () {
-        this.status() && rpio.write(this.pin, rpio.HIGH);
-      },
-      status: function () {
-        return !rpio.read(this.pin);
-      },
-      onChange: function () {
-        save('drain_valve.status', this.status());
-        events.emit('change', 'drain_valve.status', this.status());
-      },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
     },
-    drain_pump: {
-      pin: 12,
-      setup: function () {
-        rpio.open(this.pin, rpio.OUTPUT);
-        rpio.poll(this.pin, this.onChange.bind(this));
-      },
-      on: function () {
-        !this.status() && rpio.write(this.pin, rpio.LOW);
-      },
-      off: function () {
-        this.status() && rpio.write(this.pin, rpio.HIGH);
-      },
-      status: function () {
-        return !rpio.read(this.pin);
-      },
-      onChange: function () {
-        save('drain_pump.status', this.status());
-        events.emit('change', 'drain_pump.status', this.status());
-      },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('system_pumps.status', this.status());
+      events.emit('change', 'system_pumps.status', this.status());
+    },
+  },
+  fill_valve: {
+    pin: 16,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('fill_valve.status', this.status());
+      events.emit('change', 'fill_valve.status', this.status());
+    },
+  },
+  drain_valve: {
+    pin: 17,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('drain_valve.status', this.status());
+      events.emit('change', 'drain_valve.status', this.status());
+    },
+  },
+  drain_pump: {
+    pin: 12,
+    setup: function () {
+      rpio.open(this.pin, rpio.OUTPUT);
+      rpio.poll(this.pin, this.onChange.bind(this));
+      rpio.write(this.pin, rpio.HIGH);
+    },
+    on: function () {
+      !this.status() && rpio.write(this.pin, rpio.LOW);
+    },
+    off: function () {
+      this.status() && rpio.write(this.pin, rpio.HIGH);
+    },
+    status: function () {
+      return !rpio.read(this.pin);
+    },
+    onChange: function () {
+      save('drain_pump.status', this.status());
+      events.emit('change', 'drain_pump.status', this.status());
     },
   },
 };

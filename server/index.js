@@ -7,8 +7,6 @@ try {
   throw new Error('Missing server configuration file.');
 }
 
-const fs = require('fs');
-const SerialPort = require('serialport');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -17,13 +15,9 @@ const logger = Logger.create('Server', { color: Logger.Colors.Green });
 
 const app = express();
 const http = require('http').createServer(app);
-
 const io = require('socket.io')(http);
-
 const relays = require('./controllers/relays');
 const system = require('./controllers/system');
-const serialParser = require('./controllers/serial_parser');
-const sensors = require('./controllers/sensors');
 const api = require('./api');
 
 relays.setup();
@@ -83,27 +77,31 @@ const onSerialTimeout = function () {
   logger.error('Arduino serial port has timed out.');
 };
 
-/*
-let serialTimeout;
 const SERIAL_TIMEOUT = 60 * 1000;
+
+const SerialPort = require('serialport');
 const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
 const serialport = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
+const serialParser = require('./controllers/serial_parser');
+let serialTimeout;
 
 serialport.pipe(serial);
-serialport.on('open', () =>
-  logger.info('Arduino serial port has been opened.')
-);
+serialport.on('open', () => logger.info('Serial port has been opened.'));
 serial.on('data', (message) => {
   const item = serialParser(message);
+
+  serial_received_at = moment();
 
   if (serialTimeout) clearTimeout(serialTimeout);
 
   if (!item.type) return;
+
   io.sockets.emit(item.data.key, item.data.value);
+
   if (!sensors.isValid(item)) return;
+
   sensors.evaluate(item);
-  if (config.automate && !system.isOverrided()) control.evaluate(item);
+  control.evaluate(item);
 
   serialTimeout = setTimeout(onSerialTimeout, SERIAL_TIMEOUT);
 });
-*/
