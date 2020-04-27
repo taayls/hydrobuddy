@@ -82,6 +82,7 @@ const evaluate_ph = function (ph) {
     axios.get(api + '/nutrients/2').then((response) => {
       const last_nutrients = response.data[0].last_dose;
 
+      // Wait 45mins after last nutrient dose before trying to PH UP/DOWN.
       if (moment(last_nutrients).isAfter(now.subtract(45, 'minutes'))) return;
 
       axios.get(api + '/nutrients/0').then((response) => {
@@ -135,9 +136,26 @@ const evaluate_ec = function (ec) {
     const ec_high = response.data[0].ec_target_high;
 
     if (ec > ec_high) {
-      //drain water
+      // If EC is higher than EC Target HIGH drain some water then refill with normal water
     } else if (ec < ec_low) {
-      //add nutrients
+      // If EC is lower EC Target LOW add 10% of normal nutrient dose (doses spaces 2mins apart)
+      const id_array = [2, 3, 4, 5, 6, 7];
+
+      id_array.forEach((id) => {
+        setTimeout(() => {
+          axios.get(api + '/nutrients/' + id).then((response) => {
+            const tag = response.data[0].tag;
+
+            axios.get(api + '/nutrients/info/' + tag).then((response) => {
+              const amount = response.data[0][tag] * 0.1;
+              if (response.data[0][tag] == 0) {
+                return;
+              }
+              nutrient_pump(id, amount);
+            });
+          });
+        }, 120000 * id);
+      });
     }
   });
 };
@@ -209,7 +227,7 @@ const evaluate_water_level = function (water_level) {
 
 const nutrient_program = function () {
   if (system.getState() !== 'RUNNING') return;
-
+  // Go through each nutrient, adding dose specified for each stage. Doses are spaced apart 5 minutes to allow mixing
   const id_array = [2, 3, 4, 5, 6, 7];
 
   id_array.forEach((id) => {
