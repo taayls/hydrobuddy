@@ -49,7 +49,7 @@ const evaluate_humidity = function (humidity) {
       const max_humidity = response.data[0].max_humidity;
 
       if (humidity > max_humidity) relays.exhaust_fan.on();
-      else relays.exhaust_fan.off();
+      logger.info(`Exhaust fan turned on. Humidity: ${humidity}`);
     });
   });
 };
@@ -63,9 +63,11 @@ const evaluate_temperature = function (temperature) {
     if (!automate) return;
 
     if (temperature >= temp_max) {
-      relays.exhaust.off();
+      relays.exhaust_fan.on();
+      logger.info(`Exhaust fan turned on. Temperature: ${temperature}`);
     } else if (temperature < temp_min) {
-      relays.exhaust.off();
+      relays.exhaust_fan.off();
+      logger.info(`Exhaust fan turned off. Temperature: ${temperature}`);
     }
   });
 };
@@ -127,7 +129,18 @@ const evaluate_ph = function (ph) {
   });
 };
 
-const evaluate_ec = function (ec) {};
+const evaluate_ec = function (ec) {
+  axios.get(api + '/system/info').then((response) => {
+    const ec_low = response.data[0].ec_target_low;
+    const ec_high = response.data[0].ec_target_high;
+
+    if (ec > ec_high) {
+      //drain water
+    } else if (ec < ec_low) {
+      //add nutrients
+    }
+  });
+};
 
 const evaluate_water_level = function (water_level) {
   axios.get(api + '/settings/info').then((response) => {

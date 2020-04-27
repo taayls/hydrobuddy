@@ -4,6 +4,9 @@ const relays = require('../controllers/relays');
 const controls = require('../controllers/controls');
 const system = require('../controllers/system');
 
+const Logger = require('logplease');
+const logger = Logger.create('Manual', { color: Logger.Colors.Blue });
+
 const knex = require('../config/db.config').knex;
 
 router.get('/info', (req, res) => {
@@ -25,6 +28,7 @@ router.get('/auto', (req, res) => {
     .update({ automate_lights: 'true' })
     .then((settings) => {
       controls.light_schedule();
+      logger.info('Lights set back to AUTO');
       res.status(200).json({ message: 'success' });
     })
     .catch((err) => {
@@ -38,6 +42,7 @@ router.get('/on', (req, res) => {
     .update({ automate_lights: 'false' })
     .then((settings) => {
       relays.lights.on();
+      logger.info('Manually turned lights ON');
       res.status(200).json({ message: 'success' });
     })
     .catch((err) => {
@@ -51,6 +56,7 @@ router.get('/off', (req, res) => {
     .update({ automate_lights: 'false' })
     .then((settings) => {
       relays.lights.off();
+      logger.info('Manually turned lights OFF');
       res.status(200).json({ message: 'success' });
     })
     .catch((err) => {

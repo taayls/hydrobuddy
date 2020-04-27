@@ -15,7 +15,6 @@ const relays = {
   events: events,
   setup: function () {
     //if (config.test) return;
-
     this.ac.setup();
     this.lights.setup();
     this.exhaust_fan.setup();
@@ -39,6 +38,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.LOW);
+      save('ac.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.HIGH);
@@ -60,6 +60,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('lights.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -81,6 +82,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('exhaust_fan.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -102,6 +104,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('system_pumps.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -123,6 +126,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('fill_valve.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -144,6 +148,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('drain_valve.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
@@ -165,6 +170,7 @@ const relays = {
       rpio.open(this.pin, rpio.OUTPUT);
       rpio.poll(this.pin, this.onChange.bind(this));
       rpio.write(this.pin, rpio.HIGH);
+      save('drain_pump.status', this.status());
     },
     on: function () {
       !this.status() && rpio.write(this.pin, rpio.LOW);
