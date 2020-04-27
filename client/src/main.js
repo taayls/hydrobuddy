@@ -1,11 +1,17 @@
 import Vue from 'vue';
-import App from './App.vue';
+import DashBoard from './DashBoard.vue';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
+const booleanFilter = function(value, trueText, falseText) {
+  return value ? trueText || 'On' : falseText || 'Off';
+};
+
+Vue.filter('boolean', booleanFilter);
+
 Vue.use(
   new VueSocketIO({
-    debug: true,
+    debug: false,
     connection: SocketIO('http://hydrobuddy.local:3000'),
   })
 );
@@ -13,5 +19,5 @@ Vue.use(
 Vue.config.productionTip = false;
 
 new Vue({
-  render: (h) => h(App),
+  render: (h) => h(DashBoard),
 }).$mount('#app');
