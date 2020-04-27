@@ -17,14 +17,17 @@
     <span>Drain Valve: {{ drain_valve | boolean }}</span>
     <br />
     <span>Drain Pump: {{ drain_pump | boolean }}</span>
+    <br />
+    <Temperature />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Temperature from './components/Temperature';
 export default {
   name: 'DashBoard',
-  components: {},
+  components: { Temperature },
   data() {
     return {
       state: '',
@@ -37,6 +40,11 @@ export default {
       drain_valve: '',
       drain_pump: '',
     };
+  },
+  filters: {
+    boolean: function(value, trueText, falseText) {
+      return value ? trueText || 'On' : falseText || 'Off';
+    },
   },
   mounted() {
     axios.get('http://hydrobuddy.local:3000/api/info').then((response) => {
@@ -54,30 +62,117 @@ export default {
   created() {
     this.sockets.subscribe('system.state', (data) => {
       this.state = data;
+      this.$bvToast.toast(`System State has been updated to: ` + this.state, {
+        title: 'System State',
+        autoHideDelay: 5000,
+        variant: 'primary',
+        appendToast: true,
+      });
     });
     this.sockets.subscribe('system.stage', (data) => {
       this.stage = data;
+      this.$bvToast.toast(`Grow Stage has been updated to: ` + this.stage, {
+        title: 'Grow Stage',
+        autoHideDelay: 5000,
+        variant: 'primary',
+        appendToast: true,
+      });
     });
     this.sockets.subscribe('ac.status', (data) => {
       this.ac = data;
+      this.$bvToast.toast(
+        `AC has been switched: ${this.$options.filters.boolean(this.ac)}`,
+        {
+          title: 'AC Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('lights.status', (data) => {
       this.lights = data;
+      this.$bvToast.toast(
+        `Lights have been switched: ${this.$options.filters.boolean(
+          this.lights
+        )}`,
+        {
+          title: 'Lights Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('exhaust_fan.status', (data) => {
       this.exhaust_fan = data;
+      this.$bvToast.toast(
+        `Exhaust Fan has been switched: ${this.$options.filters.boolean(
+          this.exhaust_fan
+        )}`,
+        {
+          title: 'Exhaust Fan Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('system_pumps.status', (data) => {
       this.system_pumps = data;
+      this.$bvToast.toast(
+        `System Pumps have been switched: ${this.$options.filters.boolean(
+          this.system_pumps
+        )}`,
+        {
+          title: 'System Pump Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('fill_valve.status', (data) => {
       this.fill_valve = data;
+      this.$bvToast.toast(
+        `Fill Valve has been switched: ${this.$options.filters.boolean(
+          this.fill_valve
+        )}`,
+        {
+          title: 'Fill Valve Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('drain_valve.status', (data) => {
       this.drain_valve = data;
+      this.$bvToast.toast(
+        `Drain Valve has been switched: ${this.$options.filters.boolean(
+          this.drain_valve
+        )}`,
+        {
+          title: 'Drain Valve Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
     this.sockets.subscribe('drain_pump.status', (data) => {
       this.drain_pump = data;
+      this.$bvToast.toast(
+        `Drain Pump has been switched: ${this.$options.filters.boolean(
+          this.drain_pump
+        )}`,
+        {
+          title: 'Drain Pump Status',
+          autoHideDelay: 5000,
+          variant: 'primary',
+          appendToast: true,
+        }
+      );
     });
   },
 };
