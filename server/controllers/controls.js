@@ -81,6 +81,7 @@ const evaluate_ph = function (ph) {
     if (!automate) return;
     axios.get(api + '/nutrients/2').then((response) => {
       const last_nutrients = response.data[0].last_dose;
+      const now = moment();
 
       // Wait 45mins after last nutrient dose before trying to PH UP/DOWN.
       if (moment(last_nutrients).isAfter(now.subtract(45, 'minutes'))) return;
@@ -137,6 +138,31 @@ const evaluate_ec = function (ec) {
 
     if (ec > ec_high) {
       // If EC is higher than EC Target HIGH drain some water then refill with normal water
+      axios.get(api + '/nutrients/' + id).then((response) => {
+        const last_dose = response.data[0].last_dose;
+        const now = moment();
+
+        // If has not been 60 mins since last dose do not drain any water
+        if (moment(last_dose).isAfter(now.subtract(60, 'minutes'))) return;
+
+        // If draining/filling already return
+        if (
+          relays.drain_valve.status() ||
+          relays.drain_pump.status() ||
+          relays.fill_valve.status()
+        )
+          return;
+
+        // Open drain valve/pump
+        relays.drain_valve.on();
+        relays.drain_pump.on();
+
+        // Drain water for 60 seconds then turn pump/valve off. System will auto fill to level afterwards.
+        setTimeout(() => {
+          relays.drain_pump.off();
+          relays.drain_valve.off();
+        }, 60000);
+      });
     } else if (ec < ec_low) {
       // If EC is lower EC Target LOW add 10% of normal nutrient dose (doses spaces 2mins apart)
       const id_array = [2, 3, 4, 5, 6, 7];
@@ -144,7 +170,12 @@ const evaluate_ec = function (ec) {
       id_array.forEach((id) => {
         setTimeout(() => {
           axios.get(api + '/nutrients/' + id).then((response) => {
+            const last_dose = response.data[0].last_dose;
             const tag = response.data[0].tag;
+            const now = moment();
+
+            // If has not been 60 mins since last dose do not add more
+            if (moment(last_dose).isAfter(now.subtract(60, 'minutes'))) return;
 
             axios.get(api + '/nutrients/info/' + tag).then((response) => {
               const amount = response.data[0][tag] * 0.1;
