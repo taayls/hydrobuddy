@@ -18,16 +18,17 @@
     <br />
     <span>Drain Pump: {{ drain_pump | boolean }}</span>
     <br />
-    <Temperature />
+    <WaterTemperature />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Temperature from './components/Temperature';
+import WaterTemperature from './components/WaterTemperature';
+
 export default {
   name: 'DashBoard',
-  components: { Temperature },
+  components: { WaterTemperature },
   data() {
     return {
       state: '',

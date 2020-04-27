@@ -77,6 +77,14 @@ const onSerialTimeout = function () {
   logger.error('Arduino serial port has timed out.');
 };
 
+const lemdb = require('./config/db.config').lemdb;
+const save = function () {
+  var recorder = lemdb.recorder('reservoir.temperature');
+  recorder(23);
+};
+
+save();
+
 const SERIAL_TIMEOUT = 60 * 1000;
 
 const SerialPort = require('serialport');
