@@ -78,9 +78,18 @@ const onSerialTimeout = function () {
 };
 
 const lemdb = require('./config/db.config').lemdb;
+
 const save = function () {
   var recorder = lemdb.recorder('reservoir.temperature');
-  recorder(23);
+  recorder(26.1);
+  var recorder2 = lemdb.recorder('room.temperature');
+  recorder2(21.8);
+  var recorder3 = lemdb.recorder('room.humidity');
+  recorder3(29.9);
+  var recorder4 = lemdb.recorder('reservoir.ph');
+  recorder4(6.9);
+  var recorder5 = lemdb.recorder('reservoir.ec');
+  recorder5(1.77);
 };
 
 save();

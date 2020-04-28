@@ -53,6 +53,8 @@ CREATE TABLE `stages` (
   `max_humidity` int(11) UNSIGNED NOT NULL,
   `ec_target_low` int(11) UNSIGNED NOT NULL,
   `ec_target_high` int(11) UNSIGNED NOT NULL,
+  `ph_up` int(11) UNSIGNED NOT NULL,
+  `ph_down` int(11) UNSIGNED NOT NULL,
   `nutrient_a` int(11) UNSIGNED NOT NULL,
   `nutrient_b` int(11) UNSIGNED NOT NULL,
   `nutrient_c` int(11) UNSIGNED NOT NULL,
@@ -62,9 +64,9 @@ CREATE TABLE `stages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `stages` (`id`, `name`, `lights_on`, `lights_off`, `max_humidity`, `ec_target_low`, `ec_target_high`, `nutrient_a`, `nutrient_b`, `nutrient_c`, `nutrient_d`, `nutrient_e`, `nutrient_f`) VALUES
-(0, 'seedling', 0, 0, 80, 1, 2, 1.6, 2.0, 0, 0, 0, 0),
-(1, 'vegetative_early', 0, 0, 65, 1.6, 2.0, 0, 0, 0, 0, 0, 0),
-(2, 'vegetative_late', 0, 0, 50, 1.6, 2.0, 0, 0, 0, 0, 0, 0),
-(3, 'flowering_early', 0, 0, 45, 2.0, 2.75, 0, 0, 0, 0, 0, 0),
-(4, 'flowering_late', 0, 0, 40, 2.0, 2.75, 0, 0, 0, 0, 0, 0);
+INSERT INTO `stages` (`id`, `name`, `lights_on`, `lights_off`, `max_humidity`, `ec_target_low`, `ec_target_high`, `ph_up`, `ph_down`, `nutrient_a`, `nutrient_b`, `nutrient_c`, `nutrient_d`, `nutrient_e`, `nutrient_f`) VALUES
+(0, 'seedling', 0, 0, 80, 1, 2, 1.6, 2.0, 1, 1, 0, 0, 0, 0),
+(1, 'vegetative_early', 0, 0, 65, 1.6, 2.0, 1, 1, 0, 0, 0, 0, 0, 0),
+(2, 'vegetative_late', 0, 0, 50, 1.6, 2.0, 1, 1, 0, 0, 0, 0, 0, 0),
+(3, 'flowering_early', 0, 0, 45, 2.0, 2.75, 1, 1, 0, 0, 0, 0, 0, 0),
+(4, 'flowering_late', 0, 0, 40, 2.0, 2.75, 1, 1, 0, 0, 0, 0, 0, 0);

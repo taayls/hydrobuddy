@@ -1,0 +1,141 @@
+<template>
+  <div class="widget widget-one_hybrid">
+    <div class="widget-heading">
+      <p class="w-value">{{ humidity }} %</p>
+      <h5 class="">Humidity</h5>
+    </div>
+    <div class="widget-content">
+      <div class="w-chart" style="position: relative;">
+        <div style="min-height: 160px;">
+          <apexchart
+            type="area"
+            ref="humidityChart"
+            height="185"
+            :options="chartOptions"
+            :series="series"
+          ></apexchart>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import moment from 'moment';
+
+export default {
+  name: 'HumidityTemperature',
+  data() {
+    return {
+      humidity: 0,
+      date: null,
+      datacollection: {},
+      series: [
+        {
+          name: 'Humidity',
+          data: [],
+        },
+      ],
+      chartOptions: {
+        chart: {
+          id: 'sparkline1',
+          type: 'area',
+          height: 160,
+          sparkline: {
+            enabled: true,
+          },
+          animations: {
+            enabled: true,
+            easing: 'linear',
+            dynamicAnimation: {
+              speed: 1000,
+            },
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2,
+        },
+        xaxis: {
+          categories: [],
+          type: 'datetime',
+        },
+
+        yaxis: {
+          opposite: true,
+        },
+        colors: ['#25d5e4'],
+        tooltip: {
+          theme: 'dark',
+          x: {
+            show: true,
+            format: 'dd/MM HH:mm',
+          },
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            type: 'vertical',
+            shadeIntensity: 1,
+            inverseColors: !1,
+            opacityFrom: 0.4,
+            opacityTo: 0.05,
+            stops: [45, 100],
+          },
+        },
+      },
+    };
+  },
+  created() {
+    this.fillChart();
+    this.fetchData();
+  },
+  mounted() {},
+  methods: {
+    fillChart() {
+      let end = new Date().getTime();
+      let start = new Date().setTime(end - 24 * 60 * 60 * 1000);
+
+      axios
+        .get(
+          'http://hydrobuddy.local:3000/api/stats/room.humidity?start=' +
+            start +
+            'end=' +
+            end
+        )
+        .then((response) => {
+          let results = response.data;
+          let dateresult = results.map((a) => moment(a.timestamp).format());
+          let valueresult = results.map((a) => a.value);
+
+          this.series = [
+            {
+              data: valueresult,
+            },
+          ];
+
+          this.chartOptions = {
+            xaxis: {
+              categories: dateresult,
+            },
+          };
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    fetchData() {
+      this.sockets.subscribe('room.humidity', (data) => {
+        this.temp = data;
+        this.fillChart();
+      });
+    },
+  },
+};
+</script>
+
+<style></style>
