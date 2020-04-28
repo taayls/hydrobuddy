@@ -1,7 +1,12 @@
 <template>
   <div class="widget-four">
     <div class="widget-heading">
-      <h5 class="">Current Nutrient Settings</h5>
+      <h5 class="">
+        Current Nutrient Settings
+        <a href="/" style="color:#1b55e2"
+          ><font-awesome-icon pull="right" :icon="['fas', 'cogs']"
+        /></a>
+      </h5>
     </div>
     <div class="widget-content">
       <div class="vistorsBrowser">
@@ -57,7 +62,7 @@
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ ph_up.name }}</h6>
+              <h6>{{ ph_up.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="ph_up.amount > 0"
@@ -65,13 +70,20 @@
               >
                 {{ ph_up.amount }} ml/L
               </p>
+              <p
+                class="browser-count"
+                v-if="ph_up.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
             </div>
           </div>
         </div>
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ ph_down.name }}</h6>
+              <h6>{{ ph_down.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="ph_down.amount > 0"
@@ -79,13 +91,20 @@
               >
                 {{ ph_down.amount }} ml/L
               </p>
+              <p
+                class="browser-count"
+                v-if="ph_down.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
             </div>
           </div>
         </div>
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ nutrient_a.name }}</h6>
+              <h6>{{ nutrient_a.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="nutrient_a.amount > 0"
@@ -93,13 +112,20 @@
               >
                 {{ nutrient_a.amount }} ml/L
               </p>
+              <p
+                class="browser-count"
+                v-if="nutrient_a.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
             </div>
           </div>
         </div>
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ nutrient_b.name }}</h6>
+              <h6>{{ nutrient_b.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="nutrient_b.amount > 0"
@@ -107,13 +133,20 @@
               >
                 {{ nutrient_b.amount }} ml/L
               </p>
+              <p
+                class="browser-count"
+                v-if="nutrient_b.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
             </div>
           </div>
         </div>
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ nutrient_c.name }}</h6>
+              <h6>{{ nutrient_c.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="nutrient_c.amount > 0"
@@ -121,13 +154,20 @@
               >
                 {{ nutrient_c.amount }} ml/L
               </p>
+              <p
+                class="browser-count"
+                v-if="nutrient_c.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
             </div>
           </div>
         </div>
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ nutrient_d.name }}</h6>
+              <h6>{{ nutrient_d.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="nutrient_d.amount > 0"
@@ -135,19 +175,12 @@
               >
                 {{ nutrient_d.amount }} ml/L
               </p>
-            </div>
-          </div>
-        </div>
-        <div class="browser-list">
-          <div class="w-browser-details">
-            <div class="w-browser-info">
-              <h6>{{ nutrient_e.name }}</h6>
               <p
                 class="browser-count"
-                v-if="nutrient_e.amount > 0"
-                style="color: #bae7ff"
+                v-if="nutrient_d.amount === 0"
+                style="color: #e2a03f"
               >
-                {{ nutrient_e.amount }} ml/L
+                None
               </p>
             </div>
           </div>
@@ -155,13 +188,41 @@
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>{{ nutrient_f.name }}</h6>
+              <h6>{{ nutrient_e.name }}:</h6>
+              <p
+                class="browser-count"
+                v-if="nutrient_e.amount > 0"
+                style="color: #bae7ff"
+              >
+                {{ nutrient_e.amount }} ml/L
+              </p>
+              <p
+                class="browser-count"
+                v-if="nutrient_e.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="browser-list">
+          <div class="w-browser-details">
+            <div class="w-browser-info">
+              <h6>{{ nutrient_f.name }}:</h6>
               <p
                 class="browser-count"
                 v-if="nutrient_f.amount > 0"
                 style="color: #bae7ff"
               >
                 {{ nutrient_f.amount }} ml/L
+              </p>
+              <p
+                class="browser-count"
+                v-if="nutrient_f.amount === 0"
+                style="color: #e2a03f"
+              >
+                None
               </p>
             </div>
           </div>
@@ -217,9 +278,6 @@ export default {
       axios.get('http://hydrobuddy.local:3000/api/info').then((response) => {
         this.stage = response.data.stage;
       });
-    },
-    assignData(key, value) {
-      this[key] = value;
     },
     getNutrients() {
       const id_array = [0, 1, 2, 3, 4, 5, 6, 7];
