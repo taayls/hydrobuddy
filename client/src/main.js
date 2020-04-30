@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import DashBoard from './DashBoard.vue';
 import VueSocketIO from 'vue-socket.io';
+import App from '@/App.vue';
+import router from './router';
 import SocketIO from 'socket.io-client';
 import VueApexCharts from 'vue-apexcharts';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,8 +31,10 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 
 new Vue({
-  render: (h) => h(DashBoard),
+  router,
+  template: '<App/>',
   components: {
     apexchart: VueApexCharts,
+    App,
   },
 }).$mount('#app');

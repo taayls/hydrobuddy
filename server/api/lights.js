@@ -29,6 +29,7 @@ router.get('/auto', (req, res) => {
     .then((settings) => {
       controls.light_schedule();
       logger.info('Lights set back to AUTO');
+
       res.status(200).json({ message: 'success' });
     })
     .catch((err) => {

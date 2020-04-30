@@ -1,10 +1,10 @@
 // #
 // # Editor     : Tayls
-// # Date       : 23/02/2020
+// # Date       : 28/04/2020
 // # E-Mail : tayls@protonmail.com
 
 // # Product name: HydroBuddy Sensors
-// # Version     : 1.0
+// # Version     : 1.1
 // # Description:
 // # Sensor data feedback for HydroBuddy system from Arduino over serial.
 
@@ -57,6 +57,7 @@ int distance;
 
 // Global Variables
 float temperature;
+Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591); 
 
 // Setup OneWire Instance
 OneWire oneWire(ONE_WIRE_PIN);
@@ -69,10 +70,21 @@ void setup(void)
 {
   Serial.begin(9600);
 
+  if (tsl.begin()) 
+  {
+    Serial.println(F("Found a TSL2591 sensor"));
+  } 
+  else 
+  {
+    Serial.println(F("No sensor found?"));
+    while (1);
+  }
+
   sensors.begin();
   dht.begin();
   ph.begin();
   ec.begin();
+  configureSensor();
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -120,7 +132,27 @@ void loop(void)
     Serial.print("Distance: ");
     Serial.println(distance);
 
+    advancedRead();
+
     ph.calibration(ph_voltage,temperature);
     ec.calibration(ec_voltage,temperature);
   }
+}
+
+void advancedRead(void)
+{
+  uint32_t lum = tsl.getFullLuminosity();
+  uint16_t ir, full;
+  ir = lum >> 16;
+  full = lum & 0xFFFF;
+  Serial.print(F("IR: ")); Serial.println(ir);
+  Serial.print(F("Full: ")); Serial.println(full);
+  Serial.print(F("Visible: ")); Serial.println(full - ir);
+  Serial.print(F("Lux: ")); Serial.println(tsl.calculateLux(full, ir));
+}
+
+void configureSensor(void)
+{
+  tsl.setGain(TSL2591_GAIN_MED);
+  tsl.setTiming(TSL2591_INTEGRATIONTIME_100MS);
 }

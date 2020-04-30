@@ -1,4 +1,3 @@
-const config = require('../config/server.config');
 const through = require('through');
 const express = require('express');
 const router = express.Router();

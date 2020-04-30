@@ -3,9 +3,29 @@
     <div class="widget-heading">
       <h5 class="">
         Light Statistics
-        <a href="/" style="color:#1b55e2"
-          ><font-awesome-icon pull="right" :icon="['fas', 'cogs']"
-        /></a>
+        <button
+          v-on:click="lightsAuto()"
+          class="btn btn-primary mb-2 btn-sm"
+          style="float:right; margin-left: 5px"
+        >
+          Auto
+        </button>
+        <button
+          v-on:click="lightsOn()"
+          v-if="status === false"
+          class="btn btn-success mb-2 btn-sm"
+          style="float:right; margin-left: 5px"
+        >
+          On
+        </button>
+        <button
+          v-on:click="lightsOff()"
+          v-if="status === true"
+          class="btn btn-danger mb-2 btn-sm"
+          style="float:right; margin-left: 5px"
+        >
+          Off
+        </button>
       </h5>
     </div>
     <div class="widget-content">
@@ -45,9 +65,9 @@
         <div class="browser-list">
           <div class="w-browser-details">
             <div class="w-browser-info">
-              <h6>Illuminance:</h6>
+              <h6>Lux:</h6>
               <p class="browser-count" style="color: #1b55e2">
-                {{ illuminance }} LUX
+                {{ illuminance }}
               </p>
             </div>
           </div>
@@ -125,6 +145,30 @@ export default {
     };
   },
   methods: {
+    lightsOn() {
+      axios.get('http://hydrobuddy.local:3000/api/lights/on');
+      axios
+        .get('http://hydrobuddy.local:3000/api/settings/info')
+        .then((response) => {
+          this.automated = response.data[0].automate_lights;
+        });
+    },
+    lightsOff() {
+      axios.get('http://hydrobuddy.local:3000/api/lights/off');
+      axios
+        .get('http://hydrobuddy.local:3000/api/settings/info')
+        .then((response) => {
+          this.automated = response.data[0].automate_lights;
+        });
+    },
+    lightsAuto() {
+      axios.get('http://hydrobuddy.local:3000/api/lights/auto');
+      axios
+        .get('http://hydrobuddy.local:3000/api/settings/info')
+        .then((response) => {
+          this.automated = response.data[0].automate_lights;
+        });
+    },
     getLightsStage() {
       axios
         .get('http://hydrobuddy.local:3000/api/lights/info')
@@ -169,13 +213,15 @@ export default {
     this.getStatus();
     this.calculateSVP();
     this.calculateVPD();
+    this.sockets.subscribe('lights.status', (data) => {
+      this.status = data;
+    });
     this.sockets.subscribe('room.temperature', (data) => {
       this.temp = data;
     });
     this.sockets.subscribe('room.humidity', (data) => {
       this.humidity = data;
     });
-
     this.sockets.subscribe('room.infrared_spectrum', (data) => {
       this.ir_spectrum = data;
     });
