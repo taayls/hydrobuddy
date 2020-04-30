@@ -25,7 +25,7 @@ const sensors = [
     format: function (re_result) {
       return {
         key: 'reservoir.temperature',
-        value: parseFloat(re_result[2]),
+        value: parseFloat(re_result[1]),
       };
     },
   },

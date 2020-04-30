@@ -9,6 +9,7 @@ try {
 
 const path = require('path');
 const express = require('express');
+const moment = require('moment');
 const bodyParser = require('body-parser');
 const Logger = require('logplease');
 const logger = Logger.create('Server', { color: Logger.Colors.Green });
@@ -16,12 +17,16 @@ const logger = Logger.create('Server', { color: Logger.Colors.Green });
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const controls = require('./controllers/controls');
 const relays = require('./controllers/relays');
 const system = require('./controllers/system');
+const sensors = require('./controllers/sensors');
+const motors = require('./controllers/motors');
 const api = require('./api');
 
 relays.setup();
 system.load();
+motors.setup();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -77,25 +82,8 @@ const onSerialTimeout = function () {
   logger.error('Arduino serial port has timed out.');
 };
 
-const lemdb = require('./config/db.config').lemdb;
-
-const save = function () {
-  var recorder = lemdb.recorder('reservoir.temperature');
-  recorder(26.1);
-  var recorder2 = lemdb.recorder('room.temperature');
-  recorder2(21.8);
-  var recorder3 = lemdb.recorder('room.humidity');
-  recorder3(29.9);
-  var recorder4 = lemdb.recorder('reservoir.ph');
-  recorder4(6.9);
-  var recorder5 = lemdb.recorder('reservoir.ec');
-  recorder5(1.77);
-};
-
-save();
-
 const SERIAL_TIMEOUT = 60 * 1000;
-
+const SERIAL_LOG_INTERVAL = 1000 * 60 * 5;
 const SerialPort = require('serialport');
 const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
 const serialport = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
@@ -106,7 +94,6 @@ serialport.pipe(serial);
 serialport.on('open', () => logger.info('Serial port has been opened.'));
 serial.on('data', (message) => {
   const item = serialParser(message);
-
   serial_received_at = moment();
 
   if (serialTimeout) clearTimeout(serialTimeout);
@@ -118,7 +105,9 @@ serial.on('data', (message) => {
   if (!sensors.isValid(item)) return;
 
   sensors.evaluate(item);
-  control.evaluate(item);
+  controls.evaluate(item);
 
   serialTimeout = setTimeout(onSerialTimeout, SERIAL_TIMEOUT);
 });
+
+setInterval(sensors.record, SERIAL_LOG_INTERVAL);

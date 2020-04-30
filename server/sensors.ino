@@ -12,6 +12,10 @@
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 
+// TSL2591 libraries
+#include <Wire.h>
+#include "Adafruit_TSL2591.h"
+
 // DFRobot Libraries
 #include "DFRobot_EC.h"
 #include "DFRobot_PH.h"
@@ -113,7 +117,7 @@ void loop(void)
     Serial.print("EC: ");
     ec_voltage = analogRead(EC_PIN)/1024.0*5000;
     ecValue =  ec.readEC(ec_voltage,temperature);
-    Serial.print(ecValue,2);
+    Serial.println(ecValue,2);
     Serial.print("Water Temperature: ");
     Serial.println(sensors.getTempCByIndex(0));
 
@@ -130,7 +134,10 @@ void loop(void)
     distance = duration * 0.034 / 2;
 
     Serial.print("Distance: ");
-    Serial.println(distance);
+    // Distances closer than 2cm result in large number
+    if (distance > 500) Serial.println(0);
+    // Return normal distance if under large number
+    if (distance < 500) Serial.println(distance);
 
     advancedRead();
 

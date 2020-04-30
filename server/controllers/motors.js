@@ -1,8 +1,8 @@
 const axios = require('axios');
 const config = require('../config/motors.config');
 const server_config = require('../config/server.config');
-const motorHatOne = require('motor-hat')(config.motor_hat_one);
-const motorHatTwo = require('motor-hat')(config.motor_hat_two);
+const motorHatOne = require('motor-hat')(config.motor_hat_one.hat_config);
+const motorHatTwo = require('motor-hat')(config.motor_hat_two.hat_config);
 const Logger = require('logplease');
 const logger = Logger.create('Nutrients', { color: Logger.Colors.Cyan });
 
@@ -14,6 +14,18 @@ if (!server_config.test) {
 }
 
 const motors = {
+  setup: function () {
+    if (!server_config.test) {
+      motorHatOne.dcs[0].setSpeedSync(config.motor_hat_one.motor_config.speed);
+      motorHatOne.dcs[1].setSpeedSync(config.motor_hat_one.motor_config.speed);
+      motorHatOne.dcs[2].setSpeedSync(config.motor_hat_one.motor_config.speed);
+      motorHatOne.dcs[3].setSpeedSync(config.motor_hat_one.motor_config.speed);
+      motorHatTwo.dcs[0].setSpeedSync(config.motor_hat_two.motor_config.speed);
+      motorHatTwo.dcs[1].setSpeedSync(config.motor_hat_two.motor_config.speed);
+      motorHatTwo.dcs[2].setSpeedSync(config.motor_hat_two.motor_config.speed);
+      motorHatTwo.dcs[3].setSpeedSync(config.motor_hat_two.motor_config.speed);
+    }
+  },
   run: function (id) {
     switch (id) {
       case 0:
