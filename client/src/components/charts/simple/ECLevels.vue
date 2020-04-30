@@ -1,8 +1,8 @@
 <template>
   <div class="widget widget-chart-three">
     <div class="widget-heading">
-      <div class="">
-        <h5 class="">EC Level - {{ ec }}</h5>
+      <div class>
+        <h5 class>EC | Current: {{ ec }}</h5>
       </div>
     </div>
     <div class="widget-content" style="position: relative;">
@@ -20,11 +20,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
+import axios from "axios";
+import moment from "moment";
 
 export default {
-  name: 'ECLevels',
+  name: "ECLevels",
   data() {
     return {
       ec: 0,
@@ -32,73 +32,74 @@ export default {
       datacollection: {},
       series: [
         {
-          name: 'EC',
-          data: [],
-        },
+          name: "EC",
+          data: []
+        }
       ],
       chartOptions: {
         chart: {
-          type: 'area',
+          type: "area",
           height: 350,
           toolbar: {
-            show: false,
-          },
+            show: false
+          }
         },
         dataLabels: {
-          enabled: false,
+          enabled: false
         },
         stroke: {
-          curve: 'smooth',
-          width: 2,
+          curve: "smooth",
+          width: 2
         },
         xaxis: {
           categories: [],
-          type: 'datetime',
+          type: "datetime"
         },
         legend: {
-          position: 'bottom',
-          horizontalAlign: 'center',
-          fontSize: '14px',
+          position: "bottom",
+          horizontalAlign: "center",
+          fontSize: "14px",
           markers: {
             width: 10,
-            height: 10,
+            height: 10
           },
           itemMargin: {
             horizontal: 0,
-            vertical: 8,
-          },
+            vertical: 8
+          }
         },
         yaxis: {
-          opposite: true,
+          opposite: true
         },
-        colors: ['#5c1ac3'],
+        colors: ["#5c1ac3"],
         grid: {
-          borderColor: '#191e3a',
+          borderColor: "#191e3a"
         },
         tooltip: {
-          theme: 'dark',
+          theme: "dark",
           x: {
             show: true,
-            format: 'dd/MM/yy HH:mm',
-          },
+            format: "dd/MM/yy HH:mm"
+          }
         },
         fill: {
-          type: 'gradient',
+          type: "gradient",
           gradient: {
-            type: 'vertical',
+            type: "vertical",
             shadeIntensity: 1,
             inverseColors: !1,
             opacityFrom: 0.4,
             opacityTo: 0.05,
-            stops: [45, 100],
-          },
-        },
-      },
+            stops: [45, 100]
+          }
+        }
+      }
     };
   },
   created() {
     this.fillChart();
     this.fetchData();
+    this.refreshChart();
   },
   mounted() {},
   methods: {
@@ -108,39 +109,46 @@ export default {
 
       axios
         .get(
-          'http://hydrobuddy.local:3000/api/stats/reservoir.ec?start=' +
+          "http://hydrobuddy.local:3000/api/stats/reservoir.ec?start=" +
             start +
-            'end=' +
+            "end=" +
             end
         )
-        .then((response) => {
+        .then(response => {
           let results = response.data;
-          let dateresult = results.map((a) => moment(a.timestamp).format());
-          let valueresult = results.map((a) => a.value);
+          let dateresult = results.map(a => moment(a.timestamp).format());
+          let valueresult = results.map(a => a.value);
 
           this.series = [
             {
-              data: valueresult,
-            },
+              data: valueresult
+            }
           ];
 
           this.chartOptions = {
             xaxis: {
-              categories: dateresult,
-            },
+              categories: dateresult
+            }
           };
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
-    fetchData() {
-      this.sockets.subscribe('reservoir.ec', (data) => {
-        this.ec = data;
+    refreshChart() {
+      setInterval(() => {
         this.fillChart();
-      });
+      }, 300000);
     },
+    fetchData() {
+      this.sockets.subscribe("reservoir.ec", data => {
+        this.ec = data;
+      });
+    }
   },
+  beforeDestroy() {
+    clearInterval(this.refreshChart);
+  }
 };
 </script>
 

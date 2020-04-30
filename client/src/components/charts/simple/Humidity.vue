@@ -2,7 +2,7 @@
   <div class="widget widget-one_hybrid">
     <div class="widget-heading">
       <p class="w-value">{{ humidity }} %</p>
-      <h5 class="">Humidity</h5>
+      <h5 class>Humidity</h5>
     </div>
     <div class="widget-content">
       <div class="w-chart" style="position: relative;">
@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
+import axios from "axios";
+import moment from "moment";
 
 export default {
-  name: 'HumidityTemperature',
+  name: "HumidityTemperature",
   data() {
     return {
       humidity: 0,
@@ -33,66 +33,67 @@ export default {
       datacollection: {},
       series: [
         {
-          name: 'Humidity',
-          data: [],
-        },
+          name: "Humidity",
+          data: []
+        }
       ],
       chartOptions: {
         chart: {
-          id: 'sparkline1',
-          type: 'area',
+          id: "sparkline1",
+          type: "area",
           height: 160,
           sparkline: {
-            enabled: true,
+            enabled: true
           },
           animations: {
             enabled: true,
-            easing: 'linear',
+            easing: "linear",
             dynamicAnimation: {
-              speed: 1000,
-            },
-          },
+              speed: 1000
+            }
+          }
         },
         dataLabels: {
-          enabled: false,
+          enabled: false
         },
         stroke: {
-          curve: 'smooth',
-          width: 2,
+          curve: "smooth",
+          width: 2
         },
         xaxis: {
           categories: [],
-          type: 'datetime',
+          type: "datetime"
         },
 
         yaxis: {
-          opposite: true,
+          opposite: true
         },
-        colors: ['#25d5e4'],
+        colors: ["#25d5e4"],
         tooltip: {
-          theme: 'dark',
+          theme: "dark",
           x: {
             show: true,
-            format: 'dd/MM HH:mm',
-          },
+            format: "dd/MM HH:mm"
+          }
         },
         fill: {
-          type: 'gradient',
+          type: "gradient",
           gradient: {
-            type: 'vertical',
+            type: "vertical",
             shadeIntensity: 1,
             inverseColors: !1,
             opacityFrom: 0.4,
             opacityTo: 0.05,
-            stops: [45, 100],
-          },
-        },
-      },
+            stops: [45, 100]
+          }
+        }
+      }
     };
   },
   created() {
     this.fillChart();
     this.fetchData();
+    this.refreshChart();
   },
   mounted() {},
   methods: {
@@ -102,39 +103,47 @@ export default {
 
       axios
         .get(
-          'http://hydrobuddy.local:3000/api/stats/room.humidity?start=' +
+          "http://hydrobuddy.local:3000/api/stats/room.humidity?start=" +
             start +
-            'end=' +
+            "end=" +
             end
         )
-        .then((response) => {
+        .then(response => {
           let results = response.data;
-          let dateresult = results.map((a) => moment(a.timestamp).format());
-          let valueresult = results.map((a) => a.value);
+          let dateresult = results.map(a => moment(a.timestamp).format());
+          let valueresult = results.map(a => a.value);
 
           this.series = [
             {
-              data: valueresult,
-            },
+              data: valueresult
+            }
           ];
 
           this.chartOptions = {
             xaxis: {
-              categories: dateresult,
-            },
+              categories: dateresult
+            }
           };
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
     fetchData() {
-      this.sockets.subscribe('room.humidity', (data) => {
+      this.sockets.subscribe("room.humidity", data => {
         this.temp = data;
         this.fillChart();
       });
     },
+    refreshChart() {
+      setInterval(() => {
+        this.fillChart();
+      }, 300000);
+    }
   },
+  beforeDestroy() {
+    clearInterval(this.refreshChart);
+  }
 };
 </script>
 
