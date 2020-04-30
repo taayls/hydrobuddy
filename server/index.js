@@ -84,14 +84,35 @@ const onSerialTimeout = function () {
 
 const SERIAL_TIMEOUT = 60 * 1000;
 const SERIAL_LOG_INTERVAL = 1000 * 60 * 5;
-const SerialPort = require('serialport');
-const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
-const serialport = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
-const serialParser = require('./controllers/serial_parser');
 let serialTimeout;
 
+const SerialPort = require('serialport');
+const serialParser = require('./controllers/serial_parser');
+const serial = new SerialPort.parsers.Readline({ delimiter: '\r\n' });
+const serialport = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
+
 serialport.pipe(serial);
-serialport.on('open', () => logger.info('Serial port has been opened.'));
+
+serialport.on('open', () => {
+  logger.info('Serial port connection opened.');
+});
+serialport.on('close', () => {
+  logger.error('Lost serial port connection. Retrying in 60 seconds...');
+  setTimeout(function () {
+    logger.debug('Trying to reconnect serial port connection.');
+    serialport.open();
+  }, 60000);
+});
+serialport.on('error', () => {
+  logger.error(
+    'Error establishing serial port connection. Retrying in 60 seconds...'
+  );
+  setTimeout(function () {
+    logger.debug('Trying to reconnect serial port connection.');
+    serialport.open();
+  }, 60000);
+});
+
 serial.on('data', (message) => {
   const item = serialParser(message);
   serial_received_at = moment();

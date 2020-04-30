@@ -1,5 +1,7 @@
 const config = require('../config/sensors.config');
 const lemdb = require('../config/db.config').lemdb;
+const Logger = require('logplease');
+const logger = Logger.create('Sensors', { color: Logger.Colors.Magenta });
 
 let sensor_data = {
   'reservoir.ph': [],
@@ -30,6 +32,7 @@ const record = function () {
     const average = getAverage(data_key);
     lemdb.recorder(data_key)(average);
     sensor_data[data_key] = [];
+    logger.info('Sensor data saved to database.');
   });
 };
 

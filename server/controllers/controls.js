@@ -221,8 +221,13 @@ const evaluate_water_level = function (water_level) {
       return;
     }
 
-    if (water_level > pump_limit) relays.system_pumps.off();
-    else relays.system_pumps.on();
+    if (system.getState() !== 'RUNNING') {
+      return;
+    } else if (water_level > pump_limit) {
+      relays.system_pumps.off();
+    } else {
+      relays.system_pumps.on();
+    }
 
     if (system.getState() === 'DRAINING') {
       if (water_level >= level_min) {
